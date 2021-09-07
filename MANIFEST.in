@@ -1,0 +1,2 @@
+include mkdocs_blogging_plugin/templates/*.html
+include mkdocs_blogging_plugin/templates/*.js

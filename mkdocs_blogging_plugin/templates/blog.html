@@ -1,0 +1,115 @@
+<style>
+    .md-typeset .post:first-of-type h3 {
+        margin-top: 0;
+    }
+    .md-typeset .post-title {
+        margin-bottom: 0;
+    }
+    .md-typeset .post-extra {
+        color: #777777bb;
+    }
+    .md-typeset .post-tags {
+        float: right;
+    }
+    .md-typeset .pages > .page:target ~ .page:last-child,
+    .md-typeset .pages > .page {
+        display: none;
+    }
+    .md-typeset .pages > :last-child,
+    .md-typeset .pages > .page:target {
+        display: block;
+    }
+    .md-typeset .center {
+        text-align: center;
+    }
+    .md-typeset .pagination {
+        display: inline-block;
+    }
+    .md-typeset .pagination a {
+        color: var(--md-typeset-color);
+        float: left;
+        padding: .25em 1em;
+        text-decoration: none;
+        border-radius: 1em;
+        margin-left: .25em;
+        margin-right: .25em;
+        transition: all .15s ease-in-out;
+    }
+    .md-typeset .pagination a.active {
+        background-color: var(--md-typeset-a-color);
+        color: white;
+        font-weight: bold;
+    }
+    .md-typeset .pagination a:hover:not(.active) {
+        background-color: #dddddda1;
+    }
+</style>
+{% set blog_pages=[] %}
+{% set sort_from_old = sort["from"] == "old" %}
+{% set sort_by_creation = sort["by"] == "creation" %}
+
+{% if sort_by_creation %}
+{% set sort_attribute="git_created_date_localized" %}
+{% else %}
+{% set sort_attribute="git_revision_date_localized" %}
+{% endif %}
+
+{% for p in
+    pages|sort(
+        attribute='page.meta.' + sort_attribute, 
+        reverse=not sort_from_old
+    )
+%}
+    {% set pg = p.page %}
+
+    {% if pg.abs_url.startswith('/blog/') and not pg.meta.exculde_from_blog %}
+        {{ blog_pages.append(pg) or "" }}
+    {% endif %}
+{% endfor %}
+{% set page_num = (blog_pages|count / page_size)|int %}
+{% if page_num == 0 %}
+    {% set page_num = 1 %}
+{% endif %}
+<div class="pages">
+{% for pg_group in blog_pages|slice(page_num) %}
+    <div class="page" id="page{{ loop.index }}">
+    {% for pg in pg_group %}
+    <div class="post">
+    {% set title = pg.title %}
+    {% if pg.meta and pg.meta.title_full %}
+    {% set title = pg.meta.title_full %}
+    {% endif %}
+    <h3 class="post-title">
+        <a class="link" href="{{ pg.canonical_url }}">{{ title }}</a>
+    </h3>
+    <p class="post-description">
+        {% if pg.meta.description %}
+        {{ pg.meta.description | truncate }}
+        {% endif %}
+    </p>
+    <div class="post-extra">
+        <span class="post-timestamp">
+            {% if pg.meta and pg.meta.git_revision_date_localized %}
+            <span class="post-timestamp-update">
+                Updated at: {{ pg.meta.git_revision_date_localized|safe -}}
+            </span>
+            {% endif %}
+        </span>
+    </div>
+    <hr />
+    </div>
+    {% endfor %}
+    </div>
+{% endfor %}
+</div>
+{% if page_num != 1 %}
+<div class="center">
+    <div class="pagination" id="pagination">
+    {% for pg_group in blog_pages|slice(page_num) %}
+        <a class="page-number"
+            href="#page{{ loop.index }}">{{ loop.index }}</a>
+    {% endfor %}
+    </div>
+    <div>Total <b>{{ blog_pages|count }}</b> posts.</div>
+</div>
+{% endif %}
