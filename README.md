@@ -5,7 +5,7 @@ A mkdocs plugin that generates a blog page listing selected pages by time.
 ## Installation
 
 ```shell
-pip3 install git+https://github.com/liang2kl/mkdocs-blogging-plugin
+pip3 install mkdocs-blogging-plugin
 ```
 
 ## Prerequisites
