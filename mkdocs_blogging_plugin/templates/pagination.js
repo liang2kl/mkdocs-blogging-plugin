@@ -21,6 +21,11 @@ if (pagination) {
                     );
                 }
                 this.className += " active";
+
+                const offset = window.pageYOffset || document.documentElement.scrollTop
+                if (offset > 300) {
+                    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50)
+                }
             });
         }
         links[currentPage].className += " active"

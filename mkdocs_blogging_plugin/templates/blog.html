@@ -6,17 +6,16 @@
         margin-bottom: 0;
     }
     .md-typeset .post-extra {
-        color: #777777bb;
+        color: #777777aa;
     }
     .md-typeset .post-tags {
         float: right;
     }
-    .md-typeset .pages > .page:target ~ .page:last-child,
-    .md-typeset .pages > .page {
+    .md-typeset .pages > * {
         display: none;
     }
-    .md-typeset .pages > :last-child,
-    .md-typeset .pages > .page:target {
+    .md-typeset .pages > :target,
+    .md-typeset .pages {
         display: block;
     }
     .md-typeset .center {
@@ -44,35 +43,24 @@
         background-color: #dddddda1;
     }
 </style>
-{% set blog_pages=[] %}
-{% set sort_from_old = sort["from"] == "old" %}
-{% set sort_by_creation = sort["by"] == "creation" %}
 
-{% if sort_by_creation %}
-{% set sort_attribute="git_created_date_localized" %}
-{% else %}
-{% set sort_attribute="git_revision_date_localized" %}
-{% endif %}
 
-{% for p in
-    pages|sort(
-        attribute='page.meta.' + sort_attribute, 
-        reverse=not sort_from_old
-    )
-%}
+{% for p in pages %}
     {% set pg = p.page %}
-
-    {% if pg.abs_url.startswith('/blog/') and not pg.meta.exculde_from_blog %}
-        {{ blog_pages.append(pg) or "" }}
-    {% endif %}
 {% endfor %}
-{% set page_num = (blog_pages|count / page_size)|int %}
-{% if page_num == 0 %}
+{% set page_num = (pages|count / page_size)|round(method='ceil')|int %}
+{% if page_num == 0 or not paging %}
     {% set page_num = 1 %}
+    {% if not paging %}
+        {% set page_size = 10000 %}
+    {% endif %}
 {% endif %}
+
+
 <div class="pages">
-{% for pg_group in blog_pages|slice(page_num) %}
-    <div class="page" id="page{{ loop.index }}">
+{% for page_idx in range(0, page_num) %}
+    {% set pg_group = pages[page_idx*page_size:(page_idx + 1)*page_size] %}
+    <div class="page" id="page{{ page_idx + 1 }}">
     {% for pg in pg_group %}
     <div class="post">
     {% set title = pg.title %}
@@ -89,9 +77,9 @@
     </p>
     <div class="post-extra">
         <span class="post-timestamp">
-            {% if pg.meta and pg.meta.git_revision_date_localized %}
+            {% if pg.meta and pg.meta["localized-time"] %}
             <span class="post-timestamp-update">
-                Updated at: {{ pg.meta.git_revision_date_localized|safe -}}
+                Updated at: {{ pg.meta["localized-time"] -}}
             </span>
             {% endif %}
         </span>
@@ -105,11 +93,11 @@
 {% if page_num != 1 %}
 <div class="center">
     <div class="pagination" id="pagination">
-    {% for pg_group in blog_pages|slice(page_num) %}
+    {% for num in range(page_num) %}
         <a class="page-number"
-            href="#page{{ loop.index }}">{{ loop.index }}</a>
+            href="#page{{ num + 1 }}">{{ num + 1 }}</a>
     {% endfor %}
     </div>
-    <div>Total <b>{{ blog_pages|count }}</b> posts.</div>
+    <div>Total <b>{{ pages|count }}</b> posts.</div>
 </div>
 {% endif %}

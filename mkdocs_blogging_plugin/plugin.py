@@ -1,9 +1,13 @@
 import os
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-from jinja2 import Environment, PackageLoader, select_autoescape, Template
+from mkdocs.exceptions import PluginError
+
+from jinja2 import Environment, PackageLoader, select_autoescape
+from .util import Util
 import re
 
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
 class BloggingPlugin(BasePlugin):
     """
@@ -12,15 +16,24 @@ class BloggingPlugin(BasePlugin):
     """
     
     config_scheme = (
-        ("dir", config_options.Type(str, default="blog")),
+        ("dirs", config_options.Type(list, default=[])),
         ("size", config_options.Type(int, default=10)),
-        ("sort", config_options.Type(dict, default={"from": "old", "by": "creation"})),
+        ("sort", config_options.Type(dict, default={"from": "old"})),
+        ("locale", config_options.Type(str, default=None)),
+        ("paging", config_options.Type(bool, default=True)),
     )
 
     blog_pages = []
+
+    # Config
     size = 0
     additional_html = None
+    docs_dirs = []
     sort = ""
+    locale = None
+    paging = True
+
+    util = Util()
     
     env = Environment(
         loader=PackageLoader("mkdocs_blogging_plugin"),
@@ -28,34 +41,76 @@ class BloggingPlugin(BasePlugin):
     )    
     template = env.get_template("blog.html")
     
-    def on_pre_page(self, page, config, files):
+    def on_config(self, config):
         self.size = self.config.get("size")
-        docs_dir = self.config.get("dir")
+        self.docs_dirs = self.config.get("dirs")
         self.sort = self.config.get("sort")
+        self.paging = self.config.get("paging")
 
-        if docs_dir[-1:] != "/":
-            docs_dir += "/"
-        
-        self.blog_pages = [file for file in files if file.src_path[:len(docs_dir)] == docs_dir]
-        
+        # Abort with error with 'navigation.instant' feature on
+        # because paging won't work with it.
+        theme = config.get("theme")
+        if theme and "features" in theme and \
+            "navigation.instant" in theme["features"] and self.paging:
+            raise PluginError("[blogging-plugin] Feature 'navigation.instant' "
+                              "cannot be enabled with option 'paging' on.")
+
+        if self.config.get("locale"):
+            self.locale = self.config.get("locale")
+        else:
+            self.locale = config.get("locale")
+
+        for index, dir in enumerate(self.docs_dirs):
+            if dir[-1:] != "/":
+                self.docs_dirs[index] += "/"
+
+        # Remove all posts to adapt live reload
+        self.blog_pages = []
+
+    def on_page_content(self, html, page, config, files):
+        """
+        Add meta information about creation date after the html has
+        been generated, the time when the meta from markdown file
+        has already been added into the page instance.
+        """
+
+        if not self.docs_dirs:
+            return
+
+        for dir in self.docs_dirs:
+            if page.file.src_path[:len(dir)] == dir \
+                and (not "exclude_from_blog" in page.meta or not page.meta["exclude_from_blog"]):
+                timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path)
+                page.meta["git-timestamp"] = timestamp
+                page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, self.locale)
+                self.blog_pages.append(page)
+                break
 
     def on_post_page(self, output, page, config):
+        if not self.docs_dirs or not self.blog_pages:
+            return
+
         pattern = r"\{\{\s*blog_content\s*\}\}"
         if not re.findall(pattern, output, flags=re.IGNORECASE):
             return output
         if not self.additional_html:
+            self.blog_pages = sorted(self.blog_pages, key=lambda page: page.meta["git-timestamp"])
             self.additional_html = self.template.render(
-                pages=self.blog_pages, page_size=self.size, sort=self.sort)
+                pages=self.blog_pages, page_size=self.size, sort=self.sort, paging=self.paging)
 
         output = re.sub(
-            r"\{\{\s*blog_content\s*\}\}",
+            pattern,
             self.additional_html,
             output,
             flags=re.IGNORECASE,
         )
-
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(dir_path + "/templates/pagination.js") as file:
-            output += (r"<script>" + file.read() + r"</script>")
+        
+        """
+        Add js script to the end of the document to manipulate paging
+        bahaviours.
+        """
+        with open(DIR_PATH + "/templates/pagination.js") as file:
+            output += ("<script>" + file.read() + "</script>")
 
         return output
+
