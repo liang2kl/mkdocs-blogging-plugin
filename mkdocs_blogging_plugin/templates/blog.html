@@ -42,6 +42,9 @@
     .md-typeset .pagination a:hover:not(.active) {
         background-color: #dddddda1;
     }
+    .md-typeset .nopaging {
+        display: none;
+    }
 </style>
 
 
@@ -90,9 +93,9 @@
     </div>
 {% endfor %}
 </div>
-{% if page_num != 1 %}
-<div class="center">
-    <div class="pagination" id="pagination">
+
+<div class="center {{'nopaging' if page_num == 1 else '' }}">
+    <div class="pagination " id="pagination">
     {% for num in range(page_num) %}
         <a class="page-number"
             href="#page{{ num + 1 }}">{{ num + 1 }}</a>
@@ -100,4 +103,3 @@
     </div>
     <div>Total <b>{{ pages|count }}</b> posts.</div>
 </div>
-{% endif %}

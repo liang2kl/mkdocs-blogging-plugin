@@ -21,8 +21,8 @@ Add `blogging` in `plugins` and specify the directories to be included:
 ```yml
 plugins:
   - blogging:
-  	dirs: # The directories to be included
-  	  - blog
+      dirs: # The directories to be included
+        - blog
 ```
 
 In the page you want to insert the blog content, just add a line `{{ blog_content }}` into your desired position:
