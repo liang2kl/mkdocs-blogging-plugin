@@ -12,7 +12,7 @@ del file
 
 setup(
     name="mkdocs-blogging-plugin",
-    version="0.1",
+    version="0.1.1",
     description="Mkdocs plugin that generates a blog index page sorted by creation date.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
@@ -24,6 +24,7 @@ setup(
     license="MIT",
     python_requires=">=3.6",
     classifiers=[
+        'Development Status :: 4 - Beta',
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

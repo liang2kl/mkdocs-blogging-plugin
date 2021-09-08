@@ -18,9 +18,10 @@ class BloggingPlugin(BasePlugin):
     config_scheme = (
         ("dirs", config_options.Type(list, default=[])),
         ("size", config_options.Type(int, default=10)),
-        ("sort", config_options.Type(dict, default={"from": "old"})),
+        ("sort", config_options.Type(dict, default={"from": "new", "by": "creation"})),
         ("locale", config_options.Type(str, default=None)),
         ("paging", config_options.Type(bool, default=True)),
+        ("show_total", config_options.Type(bool, default=True)),
     )
 
     blog_pages = []
@@ -29,9 +30,10 @@ class BloggingPlugin(BasePlugin):
     size = 0
     additional_html = None
     docs_dirs = []
-    sort = ""
+    sort = {}
     locale = None
     paging = True
+    show_total = True
 
     util = Util()
     
@@ -44,8 +46,14 @@ class BloggingPlugin(BasePlugin):
     def on_config(self, config):
         self.size = self.config.get("size")
         self.docs_dirs = self.config.get("dirs")
-        self.sort = self.config.get("sort")
         self.paging = self.config.get("paging")
+        self.sort = self.config.get("sort")
+        self.show_total = self.config.get("show_total")
+
+        if "from" not in self.sort:
+            self.sort["from"] = "new"
+        if "by" not in self.sort:
+            self.sort["by"] = "creation"
 
         # Abort with error with 'navigation.instant' feature on
         # because paging won't work with it.
@@ -80,7 +88,7 @@ class BloggingPlugin(BasePlugin):
         for dir in self.docs_dirs:
             if page.file.src_path[:len(dir)] == dir \
                 and (not "exclude_from_blog" in page.meta or not page.meta["exclude_from_blog"]):
-                timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path)
+                timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path, is_first_commit=self.sort["by"] != "revision")
                 page.meta["git-timestamp"] = timestamp
                 page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, self.locale)
                 self.blog_pages.append(page)
@@ -94,9 +102,14 @@ class BloggingPlugin(BasePlugin):
         if not re.findall(pattern, output, flags=re.IGNORECASE):
             return output
         if not self.additional_html:
-            self.blog_pages = sorted(self.blog_pages, key=lambda page: page.meta["git-timestamp"])
+            self.blog_pages = sorted(self.blog_pages, 
+                key=lambda page: page.meta["git-timestamp"], 
+                reverse=self.sort["from"] == "new")
             self.additional_html = self.template.render(
-                pages=self.blog_pages, page_size=self.size, sort=self.sort, paging=self.paging)
+                pages=self.blog_pages, page_size=self.size, sort=self.sort, 
+                paging=self.paging, is_revision=self.sort["by"] == "revision",
+                show_total=self.show_total
+            )
 
         output = re.sub(
             pattern,

@@ -57,10 +57,13 @@ And it's done! You can open the page where you insert `{{ blog_content }}` and s
 Optionally, you can customize some behaviours of the plugin:
 
 ```yml
-size: 5         # Number of articles in one page, default: 10
-locale: en      # The locale for time localizations, default: system's locale
+size: 5            # Number of articles in one page, default: 10
+locale: en         # The locale for time localizations, default: system's locale
 sort: 
-  from: new     # Sort from new to old, default
-  # or old        Sort from old to new
-paging: false	# Disable paging
+  from: new        # Sort from new to old, default
+  # or old         # Sort from old to new
+  by: creation     # Sort by the first commit time, default
+  # or revision    # Sort by the latest commit time
+paging: false	   # Disable paging
+show_total: false  # Remove 'total pages' label
 ```

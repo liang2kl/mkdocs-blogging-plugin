@@ -82,7 +82,7 @@
         <span class="post-timestamp">
             {% if pg.meta and pg.meta["localized-time"] %}
             <span class="post-timestamp-update">
-                Updated at: {{ pg.meta["localized-time"] -}}
+                {{"Updated" if is_revision else "Published"}} at: {{ pg.meta["localized-time"] -}}
             </span>
             {% endif %}
         </span>
@@ -101,5 +101,7 @@
             href="#page{{ num + 1 }}">{{ num + 1 }}</a>
     {% endfor %}
     </div>
+    {% if show_total %}
     <div>Total <b>{{ pages|count }}</b> posts.</div>
+    {% endif %}
 </div>
