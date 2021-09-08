@@ -2,6 +2,8 @@
 
 A mkdocs plugin that generates a blog page listing selected pages by time.
 
+![preview](https://i.loli.net/2021/09/08/AiawUNjfgbFRuJx.png)
+
 ## Installation
 
 ```shell
