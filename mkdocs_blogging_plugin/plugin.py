@@ -106,7 +106,7 @@ class BloggingPlugin(BasePlugin):
                 key=lambda page: page.meta["git-timestamp"], 
                 reverse=self.sort["from"] == "new")
             self.additional_html = self.template.render(
-                pages=self.blog_pages, page_size=self.size, sort=self.sort, 
+                pages=self.blog_pages, page_size=self.size, 
                 paging=self.paging, is_revision=self.sort["by"] == "revision",
                 show_total=self.show_total
             )
