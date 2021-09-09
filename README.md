@@ -2,7 +2,7 @@
 
 A mkdocs plugin that generates a blog page listing selected pages by time.
 
-![preview](https://i.loli.net/2021/09/08/AiawUNjfgbFRuJx.png)
+![preview](https://i.loli.net/2021/09/09/LhX9IFkbu2K3lRi.png)
 
 ## Installation
 
@@ -69,3 +69,7 @@ sort:
 paging: false	   # Disable paging
 show_total: false  # Remove 'total pages' label
 ```
+
+## Credits
+
+Inspired by [mkdocs-git-revision-date-localized-plugin](https://github.com/timvink/mkdocs-git-revision-date-localized-plugin) and [mkdocs-material-blog](https://github.com/vuquangtrong/mkdocs-material-blog).
