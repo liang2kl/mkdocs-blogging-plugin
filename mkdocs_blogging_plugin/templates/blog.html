@@ -36,13 +36,6 @@ SOFTWARE.
     .md-typeset .post-tags {
         float: right;
     }
-    .md-typeset .pages > * {
-        display: none;
-    }
-    .md-typeset .pages > :target,
-    .md-typeset .pages {
-        display: block;
-    }
     .md-typeset .center {
         text-align: center;
     }
@@ -67,7 +60,7 @@ SOFTWARE.
     .md-typeset .pagination a:hover:not(.active) {
         background-color: #dddddda1;
     }
-    .md-typeset .nopaging {
+    .md-typeset .hidden {
         display: none;
     }
 </style>
@@ -119,11 +112,11 @@ SOFTWARE.
 {% endfor %}
 </div>
 
-<div class="center {{'nopaging' if page_num == 1 else '' }}">
+<div class="center {{'hidden' if page_num == 1 else '' }}">
     <div class="pagination " id="pagination">
     {% for num in range(page_num) %}
         <a class="page-number"
-            href="#page{{ num + 1 }}">{{ num + 1 }}</a>
+            href="#blog-p{{ num + 1 }}">{{ num + 1 }}</a>
     {% endfor %}
     </div>
     {% if show_total %}
