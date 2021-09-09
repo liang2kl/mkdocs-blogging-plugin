@@ -70,6 +70,24 @@ paging: false	   # Disable paging
 show_total: false  # Remove 'total pages' label
 ```
 
+### Publishing on Github Pages
+
+A few more steps needs to be taken for hosting on Github Pages:
+
+- Set `fetch-depth` to `0` when checking out with `actions/checkout`:
+  ```yml
+  - uses: actions/checkout@v2
+    with:
+      fetch-depth: 0
+  ```
+  Creation and revision time for articles rely on git log, so a complete respository
+  is required.
+- Configure your locale in the plugin's configuration:
+  ```yml
+  locale: zh-CN
+  ```
+  Otherwise, the plugin will use locale of the server, which is `en` by default.
+
 ## Credits
 
 Inspired by [mkdocs-git-revision-date-localized-plugin](https://github.com/timvink/mkdocs-git-revision-date-localized-plugin) and [mkdocs-material-blog](https://github.com/vuquangtrong/mkdocs-material-blog).

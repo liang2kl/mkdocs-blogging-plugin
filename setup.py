@@ -17,7 +17,9 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     keywords="mkdocs blog plugin",
-    url="https://github.com/liang2kl/mkdocs-blogging-plugin",
+    project_urls={
+        "Source": "https://github.com/liang2kl/mkdocs-blogging-plugin"
+    },
     author="Liang Yesheang",
     author_email="liang2kl@outlook.com",
     include_package_data=True,
