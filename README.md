@@ -92,6 +92,8 @@ To customize the blog content, create an HTML template with name **other than** 
 
 #### Partial Customization
 
+You can override how the plugin render a single blog through this method.
+
 In your template, define a macro that renders a single blog with the provided parameters `title`, `description` and `time`.
 Then add a line `{% extends "blog.html" %}` **below** the macro.
 
@@ -109,6 +111,8 @@ Please note that `{{ caller() }}` must be present somewhere inside the macro.
 {% extends "blog.html" %}
 ```
 
+The plugin now use your macro `render_blog` to generate the HTML.
+
 Further more, if you want to customize the css, extend the block `style` below `{% extends "blog.html" %}`. Call `{{ super() }}` at
 the top if you want to preserve the original style.
 
@@ -121,7 +125,8 @@ the top if you want to preserve the original style.
 
 Check [the original template](mkdocs_blogging_plugin/templates/blog.html) for available customization points. Here are some common ones:
 
-- `.md-typeset .blog-post-title`: blog title
+- `.md-typeset .blog-post-title`: post title
+- `.md-typeset .blog-post-description`: post description
 - `.md-typeset .blog-post-extra`: extra section for creation / revision time
 
 For more about HTML templates, refer to [jinja2's documentation](https://jinja.palletsprojects.com/en/3.0.x/).
