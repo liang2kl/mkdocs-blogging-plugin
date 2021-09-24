@@ -31,7 +31,9 @@ if (pagination) {
             const pageId = parseInt(pages[j].id.replace("page", ""))
             if (pageId != destPage) {
               // This is not the destination page
-              pages[j].className += " hidden"
+              if (!pages[j].className.includes("hidden")) {
+                pages[j].className += " hidden"
+              }
             } else {
               // This is the destination page
               pages[j].className = pages[j].className.replace(" hidden", "")
