@@ -54,9 +54,9 @@ exculde_from_blog: true
 
 And it's done! You can open the page where you insert `{{ blog_content }}` and see how it is working.
 
-### Customization
+## Customization
 
-#### Options
+### Options
 Optionally, you can customize some behaviours of the plugin:
 
 ```yml
@@ -144,7 +144,7 @@ These variables are available inside your template:
 
 You can refer to [the original template](mkdocs_blogging_plugin/templates/blog.html) for help.
 
-### Publishing on Github Pages
+## Publishing on Github Pages
 
 A few more steps needs to be taken for hosting on Github Pages:
 
