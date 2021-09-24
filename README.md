@@ -94,18 +94,20 @@ To customize the blog content, create an HTML template with name **other than** 
 
 You can override how the plugin render a single blog through this method.
 
-In your template, define a macro that renders a single blog with the provided parameters `title`, `description` and `time`.
+In your template, define a macro that renders a single blog with the provided parameters `title`, `description`, `time` and `url`.
 Then add a line `{% extends "blog.html" %}` **below** the macro.
 
 Please note that `{{ caller() }}` must be present somewhere inside the macro.
 
 ```jinja
-{% macro render_blog(title, description, time) -%}
+{% macro render_blog(title, description, time, url) -%}
+  <a href="{{ url }}">
     <h3>{{ title }}</h3>
-    <div>{{ description }}</div>
-    <div>{{ time }}</div>
-    <hr/>
-    {{ caller() }}
+  </a>
+  <div>{{ description }}</div>
+  <div>{{ time }}</div>
+  <hr/>
+  {{ caller() }}
 {%- endmacro %}
 
 {% extends "blog.html" %}
@@ -119,7 +121,9 @@ the top if you want to preserve the original style.
 ```jinja
 {% block style %}
   {{ super() }}
-  {# your style goes here #}
+  <style>
+    {# your style goes here #}
+  </style>
 {% endblock %}
 ```
 

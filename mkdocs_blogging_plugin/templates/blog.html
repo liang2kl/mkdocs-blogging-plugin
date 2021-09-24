@@ -93,6 +93,7 @@ SOFTWARE.
 
             {% for pg in pg_group %}
                 {# Setting variables. #}
+                {% set url = pg.canonical_url %}
                 {% set title = pg.title %}
                 {% if pg.meta and pg.meta.title_full %}
                     {% set title = pg.meta.title_full %}
@@ -112,12 +113,12 @@ SOFTWARE.
                 {# Render blogs. If a marco is provided, then use the marco to render. #}
 
                 {% if render_blog is defined %}
-                    {% call render_blog(title, description, time) %}
+                    {% call render_blog(title, description, time, url) %}
                     {% endcall %}
                 {% else %}
                     <div class="blog-post">
                         <h3 class="blog-post-title">
-                            <a class="link" href="{{ pg.canonical_url }}">{{ title }}</a>
+                            <a class="link" href="{{ url }}">{{ title }}</a>
                         </h3>
                         <p class="blog-post-description">
                             {{ description }}
