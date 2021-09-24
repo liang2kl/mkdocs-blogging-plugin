@@ -8,7 +8,7 @@ if (lastComponent && lastComponent.slice(0, 7) == "#blog-p") {
   }
 }
 
-var pagination = document.getElementById("pagination");
+var pagination = document.getElementById("blog-pagination");
 if (pagination) {
   var links = pagination.getElementsByClassName("page-number");
   if (links.length) {
@@ -31,12 +31,12 @@ if (pagination) {
             const pageId = parseInt(pages[j].id.replace("page", ""))
             if (pageId != destPage) {
               // This is not the destination page
-              if (!pages[j].className.includes("hidden")) {
-                pages[j].className += " hidden"
+              if (!pages[j].className.includes("blog-hidden")) {
+                pages[j].className += " blog-hidden"
               }
             } else {
               // This is the destination page
-              pages[j].className = pages[j].className.replace(" hidden", "")
+              pages[j].className = pages[j].className.replace(" blog-hidden", "")
             }
           }
         }
