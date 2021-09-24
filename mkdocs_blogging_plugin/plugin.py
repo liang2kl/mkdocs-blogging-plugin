@@ -3,7 +3,7 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
 
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from .util import Util
 import re
 
@@ -22,6 +22,7 @@ class BloggingPlugin(BasePlugin):
         ("locale", config_options.Type(str, default=None)),
         ("paging", config_options.Type(bool, default=True)),
         ("show_total", config_options.Type(bool, default=True)),
+        ("template", config_options.Type(str, default=None)),
     )
 
     blog_pages = []
@@ -34,14 +35,9 @@ class BloggingPlugin(BasePlugin):
     locale = None
     paging = True
     show_total = True
+    template = None
 
     util = Util()
-    
-    env = Environment(
-        loader=PackageLoader("mkdocs_blogging_plugin"),
-        autoescape=select_autoescape()
-    )    
-    template = env.get_template("blog.html")
     
     def on_config(self, config):
         self.size = self.config.get("size")
@@ -75,6 +71,11 @@ class BloggingPlugin(BasePlugin):
         # Remove all posts to adapt live reload
         self.blog_pages = []
 
+        if self.config.get("template"):
+            root_url = os.path.dirname(config.get("config_file_path"))
+            self.template = root_url + "/" + self.config.get("template")
+
+
     def on_page_content(self, html, page, config, files):
         """
         Add meta information about creation date after the html has
@@ -99,13 +100,25 @@ class BloggingPlugin(BasePlugin):
             return
 
         pattern = r"\{\{\s*blog_content\s*\}\}"
+        
         if not re.findall(pattern, output, flags=re.IGNORECASE):
             return output
         if not self.additional_html:
+            search_paths = [DIR_PATH + "/templates"]
+            if self.template:
+                search_paths.append(os.path.dirname(self.template))
+
+            env = Environment(
+                loader=FileSystemLoader(search_paths),
+                autoescape=select_autoescape()
+            )
+
+            template = env.get_template(os.path.basename(self.template) if self.template else "blog.html")
+    
             self.blog_pages = sorted(self.blog_pages, 
                 key=lambda page: page.meta["git-timestamp"], 
                 reverse=self.sort["from"] == "new")
-            self.additional_html = self.template.render(
+            self.additional_html = template.render(
                 pages=self.blog_pages, page_size=self.size, 
                 paging=self.paging, is_revision=self.sort["by"] == "revision",
                 show_total=self.show_total

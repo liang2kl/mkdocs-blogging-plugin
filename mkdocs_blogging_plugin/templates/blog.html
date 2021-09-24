@@ -1,4 +1,4 @@
-<!-- 
+{#
 MIT License
 
 Copyright (c) 2021 vuquangtrong
@@ -21,28 +21,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
+#}
 
+{% block style %}
 <style>
-    .md-typeset .post:first-of-type h3 {
+    .md-typeset .blog-post:first-of-type h3 {
         margin-top: 0;
     }
-    .md-typeset .post-title {
+
+    .md-typeset .blog-post-title {
         margin-bottom: 0;
     }
-    .md-typeset .post-extra {
+
+    .md-typeset .blog-post-extra {
         color: var(--md-default-fg-color--light);
     }
-    .md-typeset .post-tags {
-        float: right;
-    }
-    .md-typeset .center {
+
+    .md-typeset .blog-center {
         text-align: center;
     }
-    .md-typeset .pagination {
+
+    .md-typeset .blog-pagination {
         display: inline-block;
     }
-    .md-typeset .pagination a {
+
+    .md-typeset .blog-pagination a {
         color: var(--md-typeset-color);
         float: left;
         padding: .25em 1em;
@@ -52,24 +55,29 @@ SOFTWARE.
         margin-right: .25em;
         transition: all .15s ease-in-out;
     }
-    .md-typeset .pagination a.active {
+
+    .md-typeset .blog-pagination a.active {
         background-color: var(--md-typeset-a-color);
         color: white;
         font-weight: bold;
     }
-    .md-typeset .pagination a:hover:not(.active) {
+
+    .md-typeset .blog-pagination a:hover:not(.active) {
         background-color: #dddddda1;
     }
-    .md-typeset .hidden {
+
+    .md-typeset .blog-hidden {
         display: none;
     }
 </style>
-
+{% endblock %}
 
 {% for p in pages %}
     {% set pg = p.page %}
 {% endfor %}
+
 {% set page_num = (pages|count / page_size)|round(method='ceil')|int %}
+
 {% if page_num == 0 or not paging %}
     {% set page_num = 1 %}
     {% if not paging %}
@@ -79,47 +87,59 @@ SOFTWARE.
 
 
 <div class="pages">
-{% for page_idx in range(0, page_num) %}
-    {% set pg_group = pages[page_idx*page_size:(page_idx + 1)*page_size] %}
-    <div class="page" id="page{{ page_idx + 1 }}">
-    {% for pg in pg_group %}
-    <div class="post">
-    {% set title = pg.title %}
-    {% if pg.meta and pg.meta.title_full %}
-    {% set title = pg.meta.title_full %}
-    {% endif %}
-    <h3 class="post-title">
-        <a class="link" href="{{ pg.canonical_url }}">{{ title }}</a>
-    </h3>
-    <p class="post-description">
-        {% if pg.meta.description %}
-        {{ pg.meta.description | truncate }}
-        {% endif %}
-    </p>
-    <div class="post-extra">
-        <span class="post-timestamp">
-            {% if pg.meta and pg.meta["localized-time"] %}
-            <span class="post-timestamp-update">
-                {{"Updated" if is_revision else "Published"}} at: {{ pg.meta["localized-time"] -}}
-            </span>
-            {% endif %}
-        </span>
-    </div>
-    <hr />
-    </div>
+    {% for page_idx in range(0, page_num) %}
+        {% set pg_group = pages[page_idx*page_size:(page_idx + 1)*page_size] %}
+        <div class="page" id="page{{ page_idx + 1 }}">
+
+            {% for pg in pg_group %}
+                {# Setting variables. #}
+                {% set title = pg.title %}
+                {% if pg.meta and pg.meta.title_full %}
+                    {% set title = pg.meta.title_full %}
+                {% endif %}
+
+                {% set description = "" %}
+                {% if pg.meta.description %}
+                    {% set description = pg.meta.description|truncate %}
+                {% endif %}
+
+                {% set time = "" %}
+                {% if pg.meta and pg.meta["localized-time"] %}
+                    {% set time = pg.meta["localized-time"] %}
+                {% endif %}
+                
+
+                {# Render blogs. If a marco is provided, then use the marco to render. #}
+
+                {% if render_blog is defined %}
+                    {% call render_blog(title, description, time) %}
+                    {% endcall %}
+                {% else %}
+                    <div class="blog-post">
+                        <h3 class="blog-post-title">
+                            <a class="link" href="{{ pg.canonical_url }}">{{ title }}</a>
+                        </h3>
+                        <p class="post-description">
+                            {{ description }}
+                        </p>
+                        <div class="blog-post-extra">
+                            {{ ("Updated" if is_revision else "Published") + " at: " + time }}
+                        </div>
+                        <hr />
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
     {% endfor %}
-    </div>
-{% endfor %}
 </div>
 
-<div class="center {{'hidden' if page_num == 1 else '' }}">
-    <div class="pagination " id="pagination">
-    {% for num in range(page_num) %}
-        <a class="page-number"
-            href="#blog-p{{ num + 1 }}">{{ num + 1 }}</a>
-    {% endfor %}
+<div class="blog-center {{'blog-hidden' if page_num == 1 else '' }}">
+    <div class="blog-pagination " id="blog-pagination">
+        {% for num in range(page_num) %}
+            <a class="page-number" href="#blog-p{{ num + 1 }}">{{ num + 1 }}</a>
+        {% endfor %}
     </div>
     {% if show_total %}
-    <div>Total <b>{{ pages|count }}</b> posts.</div>
+        <div>Total <b>{{ pages|count }}</b> posts.</div>
     {% endif %}
 </div>
