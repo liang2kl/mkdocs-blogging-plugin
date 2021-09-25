@@ -90,40 +90,42 @@ To customize the blog content, create an HTML template with name **other than** 
 > 
 > then the configuration should be `template: overrides/template.html`.
 
+For introduction and usage of HTML templates, refer to [jinja2's documentation](https://jinja.palletsprojects.com/en/3.0.x/).
+
 #### Partial Customization
 
 You can override how the plugin render a single blog through this method.
 
-In your template, define a macro that renders a single blog with the provided parameters `title`, `description`, `time` and `url`.
-Then add a line `{% extends "blog.html" %}` **below** the macro.
+In your template, import the original template:
 
+```jinja
+{% extends "blog.html" %}
+```
+
+Then, define a macro named `render_blog`, which renders a single blog with the provided parameters `title`, `description`, `time` and `url`.
 Please note that `{{ caller() }}` must be present somewhere inside the macro.
 
 ```jinja
 {% macro render_blog(title, description, time, url) -%}
-  <a href="{{ url }}">
-    <h3>{{ title }}</h3>
-  </a>
-  <div>{{ description }}</div>
-  <div>{{ time }}</div>
-  <hr/>
-  {{ caller() }}
+    <a href="{{ url }}">
+        <h3>{{ title }}</h3>
+    </a>
+    <div>{{ description }}</div>
+    <div>{{ time }}</div>
+    <hr/>
+    {{ caller() }}
 {%- endmacro %}
-
-{% extends "blog.html" %}
 ```
 
-The plugin now use your macro `render_blog` to generate the HTML.
-
-Further more, if you want to customize the css, extend the block `style` below `{% extends "blog.html" %}`. Call `{{ super() }}` at
-the top if you want to preserve the original style.
+Further more, if you want to customize the css, write a block named `style`. Call `{{ super() }}` at
+the top if you want to preserve the original styles.
 
 ```jinja
 {% block style %}
-  {{ super() }}
-  <style>
-    {# your style goes here #}
-  </style>
+    {{ super() }}
+    <style>
+        {# your style goes here #}
+    </style>
 {% endblock %}
 ```
 
@@ -132,8 +134,6 @@ Check [the original template](mkdocs_blogging_plugin/templates/blog.html) for av
 - `.md-typeset .blog-post-title`: post title
 - `.md-typeset .blog-post-description`: post description
 - `.md-typeset .blog-post-extra`: extra section for creation / revision time
-
-For more about HTML templates, refer to [jinja2's documentation](https://jinja.palletsprojects.com/en/3.0.x/).
 
 #### Global Override
 
