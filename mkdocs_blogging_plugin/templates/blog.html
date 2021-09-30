@@ -72,10 +72,6 @@ SOFTWARE.
 </style>
 {% endblock %}
 
-{% for p in pages %}
-    {% set pg = p.page %}
-{% endfor %}
-
 {% set page_num = (pages|count / page_size)|round(method='ceil')|int %}
 
 {% if page_num == 0 or not paging %}

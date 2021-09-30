@@ -38,6 +38,15 @@ class BloggingPlugin(BasePlugin):
     template = None
 
     util = Util()
+
+    def on_serve(self, server, config, builder):
+        self.get_template(config)
+        
+        if self.template:
+            # Watch the template file for live reload
+            server.watch(self.template)
+        
+        return server
     
     def on_config(self, config):
         self.size = self.config.get("size")
@@ -71,10 +80,8 @@ class BloggingPlugin(BasePlugin):
         # Remove all posts to adapt live reload
         self.blog_pages = []
 
-        if self.config.get("template"):
-            root_url = os.path.dirname(config.get("config_file_path"))
-            self.template = root_url + "/" + self.config.get("template")
-
+        if not self.template:
+            self.get_template(config)
 
     def on_page_content(self, html, page, config, files):
         """
@@ -140,3 +147,8 @@ class BloggingPlugin(BasePlugin):
 
         return output
 
+    
+    def get_template(self, config):
+        if self.config.get("template"):
+            root_url = os.path.dirname(config.get("config_file_path"))
+            self.template = root_url + "/" + self.config.get("template")
