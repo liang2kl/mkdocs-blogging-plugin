@@ -40,9 +40,6 @@ if (pagination) {
             }
           }
         }
-        var pagesElement = document.getElementById("blog-pages")
-        window.scrollTo({ top: pagesElement.getBoundingClientRect().top, behavior: "smooth" })
-
       });
     }
     links[currentPage].className += " active"
