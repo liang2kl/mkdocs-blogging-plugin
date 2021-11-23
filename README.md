@@ -100,7 +100,7 @@ You have the following customization options:
 
 #### Partial Customization
 
-You can override how the plugin render a single blog entry through this method.
+You can override how the plugin render a single blog entry through this method. An example can be found [here](https://github.com/liang2kl/mkdocs-blogging-plugin-example).
 
 In your template, import the original template:
 
