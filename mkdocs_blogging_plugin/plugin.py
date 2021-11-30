@@ -8,6 +8,7 @@ from .util import Util
 import re
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+PATTERN = re.compile(r"\{\{\s*blog_content\s*\}\}", flags=re.IGNORECASE)
 
 class BloggingPlugin(BasePlugin):
     """
@@ -105,11 +106,7 @@ class BloggingPlugin(BasePlugin):
     def on_post_page(self, output, page, config):
         if not self.docs_dirs or not self.blog_pages:
             return
-
-        pattern = r"\{\{\s*blog_content\s*\}\}"
         
-        if not re.findall(pattern, output, flags=re.IGNORECASE):
-            return output
         if not self.additional_html:
             search_paths = [DIR_PATH + "/templates"]
             if self.template:
@@ -131,19 +128,20 @@ class BloggingPlugin(BasePlugin):
                 show_total=self.show_total
             )
 
-        output = re.sub(
-            pattern,
+        result = PATTERN.subn(
             self.additional_html,
             output,
-            flags=re.IGNORECASE,
         )
-        
-        """
-        Add js script to the end of the document to manipulate paging
-        bahaviours.
-        """
-        with open(DIR_PATH + "/templates/pagination.js") as file:
-            output += ("<script>" + file.read() + "</script>")
+
+        # There are matches
+        if result[1]:
+            output = result[0]
+            """
+            Add js script to the end of the document to manipulate paging
+            bahaviours.
+            """
+            with open(DIR_PATH + "/templates/pagination.js") as file:
+                output += ("<script>" + file.read() + "</script>")
 
         return output
 
