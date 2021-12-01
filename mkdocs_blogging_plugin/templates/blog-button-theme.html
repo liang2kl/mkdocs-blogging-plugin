@@ -1,0 +1,31 @@
+{% extends "blog.html" %}
+
+{% macro render_blog(title, description, time, url, page) -%}
+<div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="{{ url }}">{{ title }}</a>
+    </h3>
+    <div class="blog-post-extra">
+        {{ ("Updated" if is_revision else "Published") + " at: " + time }}
+    </div>
+    <p class="blog-post-description">
+        {{ description }}
+    </p>
+    <a class="md-button" href="{{ url }}">Continue Reading</a>
+</div>
+{{ caller() }}
+{%- endmacro %}
+
+{% block style %}
+{{ super() }}
+<style>
+    .md-typeset .md-button {
+        margin-bottom: 10px;
+    }
+
+    .md-typeset .blog-post-extra {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}⏎

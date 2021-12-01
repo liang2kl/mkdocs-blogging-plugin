@@ -64,6 +64,7 @@ Please refer to [Publishing on Github Pages](#publishing-on-github-pages).
 Optionally, you can customize some behaviours of the plugin:
 
 ```yml
+theme: card        # Use a predefined theme, select from "card, ...", default: null
 size: 5            # Number of articles in one page, default: 10
 locale: en         # The locale for time localizations, default: system's locale
 sort: 
@@ -80,7 +81,7 @@ template: blog-override.html # Path to customized template, see below
 
 The `template` entry in the configuration allows you to override the appearance of the blog page.
 
-To customize the appearance, create an HTML template with name **other than `blog.html`**, then provide
+To customize the appearance, create an HTML template with name **other than `blog.html` and `blog-*-theme.html`**, then provide
 **the path relative to the parent directory of `mkdocs.yml`** to the plugin's configuration.
 
 > For example:

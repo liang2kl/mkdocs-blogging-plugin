@@ -109,7 +109,7 @@ SOFTWARE.
                 {# Render blogs. If a marco is provided, then use the marco to render. #}
 
                 {% if render_blog is defined %}
-                    {% call render_blog(title, description, time, url) %}
+                    {% call render_blog(title, description, time, url, pg) %}
                     {% endcall %}
                 {% else %}
                     <div class="blog-post">

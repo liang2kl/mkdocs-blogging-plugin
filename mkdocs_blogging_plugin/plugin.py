@@ -1,4 +1,4 @@
-import os
+import os, logging
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
@@ -9,6 +9,9 @@ import re
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 PATTERN = re.compile(r"\{\{\s*blog_content\s*\}\}", flags=re.IGNORECASE)
+THEMES = ["card", "button"]
+
+logger = logging.getLogger("mkdocs.plugins")
 
 class BloggingPlugin(BasePlugin):
     """
@@ -24,6 +27,7 @@ class BloggingPlugin(BasePlugin):
         ("paging", config_options.Type(bool, default=True)),
         ("show_total", config_options.Type(bool, default=True)),
         ("template", config_options.Type(str, default=None)),
+        ("theme", config_options.Type(str, default=None)),
     )
 
     blog_pages = []
@@ -37,6 +41,7 @@ class BloggingPlugin(BasePlugin):
     paging = True
     show_total = True
     template = None
+    theme = None
 
     util = Util()
 
@@ -55,17 +60,24 @@ class BloggingPlugin(BasePlugin):
         self.paging = self.config.get("paging")
         self.sort = self.config.get("sort")
         self.show_total = self.config.get("show_total")
+        self.theme = self.config.get("theme")
 
         if "from" not in self.sort:
             self.sort["from"] = "new"
         if "by" not in self.sort:
             self.sort["by"] = "creation"
+        
+        if self.theme not in THEMES:
+            logger.warning(
+                f"[blogging-plugin] Theme '{self.theme}' not found. Use default theme."
+            )
+            self.theme = None
 
         # Abort with error with 'navigation.instant' feature on
         # because paging won't work with it.
-        theme = config.get("theme")
-        if theme and "features" in theme and \
-            "navigation.instant" in theme["features"] and self.paging:
+        mkdocs_theme = config.get("theme")
+        if mkdocs_theme and "features" in mkdocs_theme and \
+            "navigation.instant" in mkdocs_theme["features"] and self.paging:
             raise PluginError("[blogging-plugin] Feature 'navigation.instant' "
                               "cannot be enabled with option 'paging' on.")
 
@@ -117,7 +129,10 @@ class BloggingPlugin(BasePlugin):
                 autoescape=select_autoescape()
             )
 
-            template = env.get_template(os.path.basename(self.template) if self.template else "blog.html")
+            template = env.get_template(
+                os.path.basename(self.template) if self.template else 
+                    (f"blog-{self.theme}-theme.html" if self.theme else "blog.html")
+            )
     
             self.blog_pages = sorted(self.blog_pages, 
                 key=lambda page: page.meta["git-timestamp"], 
