@@ -2,9 +2,9 @@
 
 A mkdocs plugin that generates a blog page listing selected pages, sorted by time.
 
-![preview](https://i.loli.net/2021/09/09/LhX9IFkbu2K3lRi.png)
-
 A complete guide is available at https://liang2kl.github.io/mkdocs-blogging-plugin.
+
+![preview](https://i.loli.net/2021/09/09/LhX9IFkbu2K3lRi.png)
 
 ## Installation
 
