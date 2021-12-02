@@ -81,6 +81,25 @@ SOFTWARE.
     {% endif %}
 {% endif %}
 
+{# Render blogs. If a marco is provided, then use the marco to render. #}
+{% if render_blog is not defined %}
+{% macro render_blog(title, description, time, url, pg) -%}
+<div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="{{ url }}">{{ title }}</a>
+    </h3>
+    <p class="blog-post-description">
+        {{ description }}
+    </p>
+    <div class="blog-post-extra">
+        {{ ("Updated" if is_revision else "Published") + " at: " + time }}
+    </div>
+    <hr />
+</div>
+{{ caller() }}
+{%- endmacro %}
+{% endif %}
+
 
 <div class="pages">
     {% for page_idx in range(0, page_num) %}
@@ -105,26 +124,8 @@ SOFTWARE.
                     {% set time = pg.meta["localized-time"] %}
                 {% endif %}
                 
-
-                {# Render blogs. If a marco is provided, then use the marco to render. #}
-
-                {% if render_blog is defined %}
-                    {% call render_blog(title, description, time, url) %}
-                    {% endcall %}
-                {% else %}
-                    <div class="blog-post">
-                        <h3 class="blog-post-title">
-                            <a class="link" href="{{ url }}">{{ title }}</a>
-                        </h3>
-                        <p class="blog-post-description">
-                            {{ description }}
-                        </p>
-                        <div class="blog-post-extra">
-                            {{ ("Updated" if is_revision else "Published") + " at: " + time }}
-                        </div>
-                        <hr />
-                    </div>
-                {% endif %}
+                {% call render_blog(title, description, time, url, pg) %}
+                {% endcall %}
             {% endfor %}
         </div>
     {% endfor %}

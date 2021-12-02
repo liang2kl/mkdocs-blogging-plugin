@@ -1,0 +1,53 @@
+{% extends "blog.html" %}
+
+{% if render_blog is not defined %}
+
+{% set label = "Continue Reading" %}
+{% if theme_options and "label" in theme_options %}
+{% set label = theme_options["label"] %}
+{% endif %}
+
+{% macro render_blog(title, description, time, url, page) -%}
+<div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="{{ url }}">{{ title }}</a>
+    </h3>
+    <div class="blog-post-extra">
+        {{ ("Updated" if is_revision else "Published") + " at: " + time }}
+    </div>
+    <p class="blog-post-description">
+        {{ description }}
+    </p>
+    {% if theme_options and "plain_button" in theme_options and theme_options["plain_button"] %}
+    <a href="{{ url }}">
+        <span class="twemoji">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                    d="M13.22 19.03a.75.75 0 0 0 1.06 0l6.25-6.25a.75.75 0 0 0 0-1.06l-6.25-6.25a.75.75 0 1 0-1.06 1.06l4.97 4.97H3.75a.75.75 0 0 0 0 1.5h14.44l-4.97 4.97a.75.75 0 0 0 0 1.06z">
+                </path>
+            </svg>
+        </span>
+        {{ label }}
+    </a>
+    {% else %}
+    <a class="md-button" href="{{ url }}">{{ label }}</a>
+    {% endif %}
+</div>
+{{ caller() }}
+{%- endmacro %}
+{% endif %}
+
+
+{% block style %}
+{{ super() }}
+<style>
+    .md-typeset .md-button {
+        margin-bottom: 10px;
+    }
+
+    .md-typeset .blog-post-extra {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}

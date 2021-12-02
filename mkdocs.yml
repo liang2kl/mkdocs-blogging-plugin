@@ -1,0 +1,20 @@
+site_name: Mkdocs Blogging Plugin
+site_url: https://liang2kl.github.io/mkdocs-blogging-plugin/
+repo_url: https://github.com/liang2kl/mkdocs-blogging-plugin/
+repo_name: liang2kl/mkdocs-blogging-plugin
+edit_uri: ""
+
+theme:
+  name: 'material'
+
+nav:
+  - index.md
+  - Themes: theme.md
+  - Template: template.md
+  - Migration Guide: migration.md
+
+plugins:
+  - awesome-pages
+  - search
+
+copyright: Copyright &copy; 2021 Liang Yesheng

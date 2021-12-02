@@ -1,4 +1,4 @@
-import os
+import os, logging
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
@@ -9,6 +9,9 @@ import re
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 PATTERN = re.compile(r"\{\{\s*blog_content\s*\}\}", flags=re.IGNORECASE)
+THEMES = ["card", "button"]
+
+logger = logging.getLogger("mkdocs.plugins")
 
 class BloggingPlugin(BasePlugin):
     """
@@ -24,6 +27,7 @@ class BloggingPlugin(BasePlugin):
         ("paging", config_options.Type(bool, default=True)),
         ("show_total", config_options.Type(bool, default=True)),
         ("template", config_options.Type(str, default=None)),
+        ("theme", config_options.Type(dict, default=None)),
     )
 
     blog_pages = []
@@ -37,6 +41,7 @@ class BloggingPlugin(BasePlugin):
     paging = True
     show_total = True
     template = None
+    theme = None
 
     util = Util()
 
@@ -55,17 +60,36 @@ class BloggingPlugin(BasePlugin):
         self.paging = self.config.get("paging")
         self.sort = self.config.get("sort")
         self.show_total = self.config.get("show_total")
+        self.theme = self.config.get("theme")
 
         if "from" not in self.sort:
             self.sort["from"] = "new"
         if "by" not in self.sort:
             self.sort["by"] = "creation"
 
+        if self.theme:
+            if self.template:
+                logger.warning(
+                    "[blogging-plugin] Custom template has higher priority than "
+                    "predefined themes"
+                )
+            elif "name" not in self.theme:
+                logger.warning(
+                    f"[blogging-plugin] Theme name not found. Using default theme..."
+                )
+                self.theme = None
+            elif self.theme["name"] not in THEMES:
+                logger.warning(
+                    f"[blogging-plugin] Theme '{self.theme['name']}' not found. "
+                    "Using default theme..."
+                )
+                self.theme = None
+
         # Abort with error with 'navigation.instant' feature on
         # because paging won't work with it.
-        theme = config.get("theme")
-        if theme and "features" in theme and \
-            "navigation.instant" in theme["features"] and self.paging:
+        mkdocs_theme = config.get("theme")
+        if mkdocs_theme and "features" in mkdocs_theme and \
+            "navigation.instant" in mkdocs_theme["features"] and self.paging:
             raise PluginError("[blogging-plugin] Feature 'navigation.instant' "
                               "cannot be enabled with option 'paging' on.")
 
@@ -94,9 +118,11 @@ class BloggingPlugin(BasePlugin):
         if not self.docs_dirs:
             return
 
+        if "exclude_from_blog" in page.meta and page.meta["exclude_from_blog"]:
+            return
+
         for dir in self.docs_dirs:
-            if page.file.src_path[:len(dir)] == dir \
-                and (not "exclude_from_blog" in page.meta or not page.meta["exclude_from_blog"]):
+            if page.file.src_path[:len(dir)] == dir:
                 timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path, is_first_commit=self.sort["by"] != "revision")
                 page.meta["git-timestamp"] = timestamp
                 page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, self.locale)
@@ -117,15 +143,21 @@ class BloggingPlugin(BasePlugin):
                 autoescape=select_autoescape()
             )
 
-            template = env.get_template(os.path.basename(self.template) if self.template else "blog.html")
+            template = env.get_template(
+                os.path.basename(self.template) if self.template else 
+                    (f"blog-{self.theme['name']}-theme.html" if self.theme else "blog.html")
+            )
     
             self.blog_pages = sorted(self.blog_pages, 
                 key=lambda page: page.meta["git-timestamp"], 
                 reverse=self.sort["from"] == "new")
+            
+            theme_options = self.theme["options"] if self.theme and "options" in self.theme else None
+
             self.additional_html = template.render(
                 pages=self.blog_pages, page_size=self.size, 
                 paging=self.paging, is_revision=self.sort["by"] == "revision",
-                show_total=self.show_total
+                show_total=self.show_total, theme_options=theme_options
             )
 
         result = PATTERN.subn(
