@@ -3,6 +3,8 @@
 A mkdocs plugin that generates a blog page listing selected pages, sorted by time.
 
 A complete guide is available at https://liang2kl.github.io/mkdocs-blogging-plugin.
+You might need the [migration guide](https://liang2kl.github.io/mkdocs-blogging-plugin/migration)
+to upgrade to a new version.
 
 ![preview](https://i.loli.net/2021/09/09/LhX9IFkbu2K3lRi.png)
 
@@ -57,7 +59,7 @@ exculde_from_blog: true
 And it's done! You can open the page where you insert `{{ blog_content }}` and see how it is working.
 
 Some more steps need to be taken if you want to host your blog with GitHub Pages.
-Please refer to [Publishing on Github Pages](#publishing-on-github-pages).
+Please refer to [Publishing on Github Pages](#publish-on-github-pages).
 
 ## Customization
 
@@ -77,7 +79,7 @@ sort:
   # or revision    # Sort by the latest commit time
 paging: false      # Disable paging
 show_total: false  # Remove 'total pages' label
-template: blog-override.html # Path to customized template, see below
+template: blog-override.html # Path to customized template
 ```
 
 Check [the guide](https://liang2kl.github.io/mkdocs-blogging-plugin) for more detail.

@@ -73,13 +73,13 @@ show_total: false  # Remove 'total pages' label
 template: blog-override.html # Path to customized template
 ```
 
-For more about themes and custom templates, see [Theme](theme.md) and [Template](theme.md).
+For more about themes and custom templates, see [Themes](theme.md) and [Template](theme.md) respectively.
 
 ## Publish on Github Pages
 
 A few more steps need to be taken for hosting with Github Pages:
 
-**Set `fetch-depth` to `0` when checking out with `actions/checkout`:**
+**Set `fetch-depth` to `0` when checking out with `actions/checkout`**
 
 ```yml
 - uses: actions/checkout@v2
@@ -90,7 +90,7 @@ A few more steps need to be taken for hosting with Github Pages:
 Creation and revision time for articles rely on git logs, so a complete respository is required.
 If it is not set, the plugin will take the latest commit time as fallback.
 
-**Configure your locale in the plugin's configuration:**
+**Configure your locale in the plugin's configuration**
 
 ```yml
 locale: zh-CN
