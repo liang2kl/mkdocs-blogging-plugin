@@ -8,6 +8,12 @@ if (lastComponent && lastComponent.slice(0, 7) == "#blog-p") {
   }
 }
 
+function scrollToTop() {
+  setTimeout(function () {
+    window.scrollTo(0, 0);
+  }, 100);
+}
+
 var pagination = document.getElementById("blog-pagination");
 if (pagination) {
   var links = pagination.getElementsByClassName("page-number");
@@ -38,6 +44,7 @@ if (pagination) {
               // This is the destination page
               pages[j].className = pages[j].className.replace(" blog-hidden", "")
             }
+            scrollToTop();
           }
         }
       });

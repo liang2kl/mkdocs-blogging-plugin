@@ -1,10 +1,8 @@
-# mkdocs-blogging-plugin
+---
+title: Setup
+---
 
-A mkdocs plugin that generates a blog page listing selected pages, sorted by time.
-
-![preview](https://i.loli.net/2021/09/09/LhX9IFkbu2K3lRi.png)
-
-A complete guide is available at https://liang2kl.github.io/mkdocs-blogging-plugin.
+# Setup
 
 ## Installation
 
@@ -56,14 +54,9 @@ exculde_from_blog: true
 
 And it's done! You can open the page where you insert `{{ blog_content }}` and see how it is working.
 
-Some more steps need to be taken if you want to host your blog with GitHub Pages.
-Please refer to [Publishing on Github Pages](#publishing-on-github-pages).
+## Options
 
-## Customization
-
-### Options
-
-Optionally, you can customize some behaviours of the plugin:
+Configure the plugin via following options:
 
 ```yml
 theme:             # Use a predefined theme
@@ -77,34 +70,30 @@ sort:
   # or revision    # Sort by the latest commit time
 paging: false      # Disable paging
 show_total: false  # Remove 'total pages' label
-template: blog-override.html # Path to customized template, see below
+template: blog-override.html # Path to customized template
 ```
 
-Check [the guide](https://liang2kl.github.io/mkdocs-blogging-plugin) for more detail.
+For more about themes and custom templates, see [Theme](theme.md) and [Template](theme.md).
 
 ## Publish on Github Pages
 
 A few more steps need to be taken for hosting with Github Pages:
 
-- Set `fetch-depth` to `0` when checking out with `actions/checkout`:
+**Set `fetch-depth` to `0` when checking out with `actions/checkout`:**
 
-  ```yml
-  - uses: actions/checkout@v2
-    with:
-      fetch-depth: 0
-  ```
-  
-  Creation and revision time for articles rely on git logs, so a complete respository is required.
-  If it is not set, the plugin will take the latest commit time as fallback.
+```yml
+- uses: actions/checkout@v2
+  with:
+    fetch-depth: 0
+```
 
-- Configure your locale in the plugin's configuration:
+Creation and revision time for articles rely on git logs, so a complete respository is required.
+If it is not set, the plugin will take the latest commit time as fallback.
 
-  ```yml
-  locale: zh-CN
-  ```
-  
-  Otherwise, the plugin will use locale of the server, which might not be expected.
+**Configure your locale in the plugin's configuration:**
 
-## Credits
+```yml
+locale: zh-CN
+```
 
-Inspired by [mkdocs-git-revision-date-localized-plugin](https://github.com/timvink/mkdocs-git-revision-date-localized-plugin) and [mkdocs-material-blog](https://github.com/vuquangtrong/mkdocs-material-blog).
+Otherwise, the plugin will use locale of the server, which might not be expected.
