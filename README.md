@@ -22,7 +22,7 @@ Pull requests are welcome to break these constraints.
 pip3 install mkdocs-blogging-plugin
 ```
 
-## Quick start
+## Usage
 
 A complete guide is available at https://liang2kl.github.io/mkdocs-blogging-plugin.
 
