@@ -5,6 +5,10 @@
 <a href="{{ url }}">
     <div class="blog-override-post">
         <h3 class="blog-post-title">{{ title }}</h3>
+        {% if show_tags and "tags" in pg.meta %}
+            {% call render_tags(pg.meta["tags"], tag_base_dir) %}
+            {% endcall %}
+        {% endif %}
         <p class="blog-post-description">{{ description }}</p>
         <div class="blog-post-extra">
             {{ ("Updated" if is_revision else "Published") + " at: " + time }}

@@ -81,6 +81,11 @@ SOFTWARE.
     {% endif %}
 {% endif %}
 
+{# Define a macro to render tags, if not prodided. #}
+{% if render_tags is not defined %}
+{% from "blog-tags.html" import render_tags %}
+{% endif %}
+
 {# Render blogs. If a marco is provided, then use the marco to render. #}
 {% if render_blog is not defined %}
 {% macro render_blog(title, description, time, url, pg) -%}
@@ -88,6 +93,10 @@ SOFTWARE.
     <h3 class="blog-post-title">
         <a class="link" href="{{ url }}">{{ title }}</a>
     </h3>
+    {% if show_tags and "tags" in pg.meta %}
+        {% call render_tags(pg.meta["tags"], tag_base_dir) %}
+        {% endcall %}
+    {% endif %}
     <p class="blog-post-description">
         {{ description }}
     </p>

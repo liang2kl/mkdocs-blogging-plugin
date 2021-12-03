@@ -1,0 +1,29 @@
+<div class="blogging-tags-grid">
+{% for tag in tags %}
+    <a href="{{ tag_base_dir + tag }}" class="blogging-tag"><code>#{{ tag }}</code></a>
+{% endfor %}
+</div>
+
+{% macro render_tags(tags, base_url) -%}
+    {% with tags=tags, tag_base_dir=base_url %}
+        {% include "blog-tags.html" %}
+    {% endwith %}
+    {{ caller() }}
+{% endmacro %}
+
+{% block tags_style %}
+<style>
+    .md-typeset .blogging-tags-grid {
+        display: flex;
+        gap: 8px;
+        margin-top: 5px;
+    }
+    .md-typeset .blogging-tag {
+        color: var(--md-typeset-color);
+        background-color: var(--md-typeset-code-color);
+    }
+    .md-typeset .blogging-tag code {
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
