@@ -32,7 +32,7 @@ class BloggingPlugin(BasePlugin):
         ("show_total", config_options.Type(bool, default=True)),
         ("template", config_options.Type(str, default=None)),
         ("theme", config_options.Type(dict, default=None)),
-        ("features", config_options.Type(dict, default=[])),
+        ("features", config_options.Type(dict, default={})),
     )
 
     blog_pages = []
