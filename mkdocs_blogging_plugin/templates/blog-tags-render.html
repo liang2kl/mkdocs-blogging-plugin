@@ -1,0 +1,30 @@
+{% macro render_tags(tags, index_url) -%}
+    <div class="blogging-tags-grid">
+        {% for tag in tags %}
+        <a href="{{ index_url }}#{{ tag }}" class="blogging-tag"><code>#{{ tag }}</code></a>
+        {% endfor %}
+    </div>
+    {{ caller() }}
+{% endmacro %}
+
+{% macro get_tags_style() -%}
+<style>
+    .md-typeset .blogging-tags-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .md-typeset .blogging-tag {
+        color: var(--md-typeset-color);
+        background-color: var(--md-typeset-code-color);
+    }
+
+    .md-typeset .blogging-tag code {
+        border-radius: 5px;
+    }
+</style>
+{{ caller() }}
+{% endmacro %}

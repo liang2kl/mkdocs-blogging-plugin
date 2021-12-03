@@ -1,8 +1,6 @@
-# Template
-
 The `template` entry in the configuration allows you to override the appearance of the blog page.
 
-To customize the appearance, create an HTML template with name **other than `blog.html` and `blog-*-theme.html`**, then provide
+To customize the appearance, create an HTML template with name **other than `blog.html` and `blog-*.html`**, then provide
 **the path relative to the parent directory of `mkdocs.yml`** to the plugin's configuration.
 
 For introduction and usage of HTML templates, refer to [jinja's documentation](https://jinja.palletsprojects.com/en/3.0.x/).
@@ -17,7 +15,7 @@ You can override how the plugin render a single blog entry through this method. 
 
 In your template, import the original template. The template can be the basic `blog.html`, or one of the built-in themes, like `blog-card-theme.html`:
 
-```jinja
+```jinja title="template"
 {% extends "blog.html" %}
 ```
 
@@ -25,7 +23,7 @@ Then, define a macro named `render_blog` with parameters `title`, `description`,
 returns HTML elements that represent a single blog entry.
 Please note that `{{ caller() }}` must be present somewhere inside the macro, though it has no use here.
 
-```jinja
+```jinja title="template"
 {% macro render_blog(title, description, time, url, page) -%}
 <a href="{{ url }}">
     <h3>{{ title }}</h3>
@@ -37,9 +35,9 @@ Please note that `{{ caller() }}` must be present somewhere inside the macro, th
 {%- endmacro %}
 ```
 
-The parameter `page` allows you to add arbitary additional information to any page using its `meta` attribute. For example, we want to show the author's name on the blog page. We can add an entry `author` in the markdown file's meta section:
+The parameter `page` allows you to add arbitary additional information to any page using its `meta` attribute. For example, to show the author's name on the blog page, add an entry `author` in the markdown file's meta section:
 
-```yaml
+```markdown title="article"
 ---
 author: Liang Yesheng
 ---
@@ -47,7 +45,7 @@ author: Liang Yesheng
 
 Then, access it through `page.meta`:
 
-```jinja
+```jinja title="template"
 {% if "author" in page.meta %}
 <div>{{ page.meta["author"] }}</div>
 {% endif %}
@@ -60,7 +58,7 @@ and it will display the author.
 Further more, if you want to customize the css, write a block named `style`. Call `{{ super() }}` first
 if you want to preserve the original styles.
 
-```jinja
+```jinja title="template"
 {% block style %}
     {{ super() }}
     <style>
@@ -69,7 +67,7 @@ if you want to preserve the original styles.
 {% endblock %}
 ```
 
-Check [the original template](mkdocs_blogging_plugin/templates/blog.html) for available customization points. Here are some common ones:
+Check the original template for available customization points. Here are some common ones:
 
 - `.md-typeset .blog-post-title`: post title
 - `.md-typeset .blog-post-description`: post description
@@ -86,4 +84,4 @@ These variables are available inside your template:
 - `is_revision`: `True` if sorted by revision time, `False` if by creation time
 - `show_total`: whether to show the total number of the blog
 
-You can refer to [the original template](mkdocs_blogging_plugin/templates/blog.html) for help.
+You can refer to the original template for help.

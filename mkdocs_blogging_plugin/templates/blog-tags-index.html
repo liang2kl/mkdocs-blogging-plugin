@@ -1,0 +1,21 @@
+{% from "blog-tags-render.html" import render_tags %}
+
+{% call render_tags(tags, tag_base_dir) %}
+{% endcall %}
+
+{% for entry in entries %}
+<h3 id="{{ entry }}">#{{ entry }}</h3>
+    {% for page in entries[entry] %}
+        {% set time = "" %}
+            {% if page.meta["localized-time"] %}
+            {% set time = page.meta["localized-time"] %}
+        {% endif %}
+        <li>
+            <a href="{{ page.canonical_url }}">{{ page.title }}</a>
+            &nbsp;&nbsp;
+            <span style="color: var(--md-default-fg-color--light)">
+                {{ time }}
+            </span>
+        </li>
+    {% endfor %}
+{% endfor %}

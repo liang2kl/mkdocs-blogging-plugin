@@ -7,9 +7,17 @@ edit_uri: ""
 theme:
   name: 'material'
 
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
 nav:
   - index.md
-  - Themes: theme.md
+  - Features: features.md
+  - Theme: theme.md
   - Template: template.md
   - Migration Guide: migration.md
 

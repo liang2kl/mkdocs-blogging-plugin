@@ -81,6 +81,20 @@ SOFTWARE.
     {% endif %}
 {% endif %}
 
+{# Define a macro to render tags, if not prodided. #}
+{% if render_tags is not defined %}
+{% from "blog-tags-render.html" import render_tags %}
+{% endif %}
+
+{% if get_tags_style is not defined %}
+{% from "blog-tags-render.html" import get_tags_style %}
+{% endif %}
+
+{% block tags_style %}
+    {% call get_tags_style() %}
+    {% endcall %}
+{% endblock %}
+
 {# Render blogs. If a marco is provided, then use the marco to render. #}
 {% if render_blog is not defined %}
 {% macro render_blog(title, description, time, url, pg) -%}
@@ -88,6 +102,10 @@ SOFTWARE.
     <h3 class="blog-post-title">
         <a class="link" href="{{ url }}">{{ title }}</a>
     </h3>
+    {% if show_tags and "tags" in pg.meta %}
+        {% call render_tags(pg.meta["tags"], index_url) %}
+        {% endcall %}
+    {% endif %}
     <p class="blog-post-description">
         {{ description }}
     </p>
@@ -99,7 +117,6 @@ SOFTWARE.
 {{ caller() }}
 {%- endmacro %}
 {% endif %}
-
 
 <div class="pages">
     {% for page_idx in range(0, page_num) %}

@@ -1,0 +1,13 @@
+{% if render_tags is not defined %}
+{% from "blog-tags-render.html" import render_tags %}
+{% endif %}
+
+{% if get_tags_style is not defined %}
+{% from "blog-tags-render.html" import get_tags_style %}
+{% endif %}
+
+{% call render_tags(tags, index_url) -%}
+{% endcall %}
+
+{% call get_tags_style() -%}
+{% endcall %}
