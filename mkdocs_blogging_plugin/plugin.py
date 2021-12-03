@@ -13,6 +13,9 @@ BLOG_PAGE_PATTERN = re.compile(r"\{\{\s*blog_content\s*\}\}", flags=re.IGNORECAS
 TAG_PAGE_PATTERN = re.compile(r"\{\{\s*tag_content\s*\}\}", flags=re.IGNORECASE)
 PLACEHOLDER = "{{ PLACEHOLDER }}"
 THEMES = ["card", "button"]
+file = open(DIR_PATH + "/templates/pagination.js")
+SCRIPTS = "<script>" + file.read() + "</script>"
+del file
 
 logger = logging.getLogger("mkdocs.plugins")
 
@@ -77,6 +80,9 @@ class BloggingPlugin(BasePlugin):
             raise PluginError("[blogging-plugin] Feature 'navigation.instant' "
                               "cannot be enabled with option 'paging' on.")
         
+        if not self.template_file:
+            self.get_template(config)
+
         self.site_dir = config.get("site_dir")
         self.site_url = config.get("site_url")
 
@@ -137,12 +143,9 @@ class BloggingPlugin(BasePlugin):
             if dir[-1:] != "/":
                 self.docs_dirs[index] += "/"
 
-        # Remove all posts to adapt live reload
+        # Remove all pages to adapt live reload
         self.blog_pages = []
         self.tags = {}
-
-        if not self.template_file:
-            self.get_template(config)
 
     def on_files(self, files, config):
         if "tags" in self.features:
@@ -214,13 +217,11 @@ class BloggingPlugin(BasePlugin):
         
         # There are matches
         if result[1]:
-            output = result[0]
             """
             Add js script to the end of the document to manipulate paging
             bahaviours.
             """
-            with open(DIR_PATH + "/templates/pagination.js") as file:
-                output += ("<script>" + file.read() + "</script>")
+            output = result[0] + SCRIPTS
 
         output = TAG_PAGE_PATTERN.sub(self.tags_page_html, output)
 
@@ -234,18 +235,17 @@ class BloggingPlugin(BasePlugin):
             with open(tag_abs_dir + f"{self.tag_tmp_file_name}.html") as file:
                 html = file.read()
             
+            # Build blog page for each tag
             for tag in self.tags:
                 abs_url = tag_abs_dir + tag
                 if not os.path.isdir(abs_url):
                     os.mkdir(abs_url)
                 content = f"<h3><code>#{tag}</code></h3>\n"
-                # FIXME: Paging
                 pages = self.sorted_pages(self.tags[tag])
                 content += self.generate_html(pages)
-                result = html.replace(PLACEHOLDER, content)
+                result = html.replace(PLACEHOLDER, content) + SCRIPTS
                 with open(abs_url + "/index.html", "w") as file:
                     file.write(result)
-            # FIXME: No pages?
 
             os.remove(tag_abs_dir + f"{self.tag_tmp_file_name}.md")
             os.remove(tag_abs_dir+ f"{self.tag_tmp_file_name}.html")
@@ -277,12 +277,6 @@ class BloggingPlugin(BasePlugin):
     def get_tag_abs_url(self) -> str:
         return self.site_url + self.get_tag_rel_dir()  + "/"
     
-    def get_tags_section_name(self) -> str:
-        if "tags" in self.features:
-            if "section_name" in self.features["tags"]:
-                return self.features["tags"]["section_name"]
-        return "Tags"
-
     def sorted_pages(self, pages):
         return sorted(pages,
             key=lambda page: page.meta["git-timestamp"], 
