@@ -1,5 +1,4 @@
-import os, logging, uuid
-from mkdocs.structure.files import File
+import os, logging
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
@@ -38,6 +37,8 @@ class BloggingPlugin(BasePlugin):
 
     blog_pages = []
 
+    site_url = ""
+
     # Config
     docs_dirs = []
     size = 0
@@ -48,17 +49,16 @@ class BloggingPlugin(BasePlugin):
     template_file = None
     theme = None
     features = []
-    site_url = ""
 
     # Blog page
     blog_html = None
     
     # Tags
-    tags_template = ""
+    tags_index_template = None
+    tags_template = None
     tags = {}
-    site_dir = ""
     tags_page_html = None
-    tag_tmp_file_name = ""
+    tags_index_url = ""
 
     util = Util()
 
@@ -80,11 +80,10 @@ class BloggingPlugin(BasePlugin):
             raise PluginError("[blogging-plugin] Feature 'navigation.instant' "
                               "cannot be enabled with option 'paging' on.")
         
+        self.site_url = config.get("site_url")
+
         if not self.template_file:
             self.get_template(config)
-
-        self.site_dir = config.get("site_dir")
-        self.site_url = config.get("site_url")
 
         self.size = self.config.get("size")
         self.docs_dirs = self.config.get("dirs")
@@ -132,7 +131,17 @@ class BloggingPlugin(BasePlugin):
         )
 
         # TODO: Custom template
-        self.tags_template = env.get_template("blog-tags-index.html")
+        self.tags_index_template = env.get_template("blog-tags-index.html")
+        self.tags_template = env.get_template("blog-tags.html")
+
+        if "tags" in self.features:
+            index_path = self.features["tags"].get("index_page")
+            if index_path:
+                index_url = self.site_url + index_path
+                if index_url[-3:] == ".md":
+                    self.tags_index_url = index_url[:-3]
+                else:
+                    self.tags_index_url = index_url
 
         if self.config.get("locale"):
             self.locale = self.config.get("locale")
@@ -147,20 +156,33 @@ class BloggingPlugin(BasePlugin):
         self.blog_pages = []
         self.tags = {}
 
-    def on_files(self, files, config):
-        if "tags" in self.features:
-            # Add a temp file to the collection to generate HTML
-            tag_dest_dir = self.get_tag_abs_dir()
-            if not os.path.isdir(tag_dest_dir):
-                os.mkdir(tag_dest_dir)
-            self.tag_tmp_file_name = "blogging-tmp-" + str(uuid.uuid1())
-            file_path = tag_dest_dir + self.tag_tmp_file_name + ".md"
+    
+    def on_page_markdown(self, markdown, page, config, files):
+        if "tags" in self.features and "tags" in page.meta:
+            tags = page.meta["tags"]
+            if isinstance(tags, list):
+                for tag in tags:
+                    if tag not in self.tags:
+                        self.tags[tag] = [page]
+                    else:
+                        self.tags[tag].append(page)
+            else:
+                logger.warning(
+                    f"[blogging-plugin] Tags entry '{tags}' is not a list. "
+                    "Skipping..."
+                )
+            
+            # Insert tags into original page
+            insert = self.features["tags"].get("insert")
+            if insert:
+                tags_html = "\n" + self.tags_template.render(tags=page.meta["tags"],
+                    index_url=self.tags_index_url).strip() + "\n"
+                if insert == "bottom":
+                    markdown = markdown + "\n<br/>\n" + tags_html
+                else:
+                    markdown = tags_html + markdown
 
-            with open(file_path, "w") as file:
-                file.write(f"{PLACEHOLDER}\n")
-            file = File(file_path, tag_dest_dir, tag_dest_dir, False)
-            file.name = "Tag"
-            files.append(file)
+        return markdown
 
     def on_page_content(self, html, page, config, files):
         """
@@ -182,73 +204,36 @@ class BloggingPlugin(BasePlugin):
                 page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, self.locale)
                 self.blog_pages.append(page)
 
-                if "tags" in self.features and "tags" in page.meta:
-                    tags = page.meta["tags"]
-                    if isinstance(tags, list):
-                        for tag in tags:
-                            if tag not in self.tags:
-                                self.tags[tag] = [page]
-                            else:
-                                self.tags[tag].append(page)
-                    else:
-                        logger.warning(
-                            f"[blogging-plugin] Tags entry '{tags}' is not a list. "
-                            "Skipping..."
-                        )
                 break
 
     def on_post_page(self, output, page, config):
-        if not self.docs_dirs or not self.blog_pages:
-            return
-        
-        if "tags" in self.features and not self.blog_html:            
-            self.blog_html = self.generate_html(self.sorted_pages(self.blog_pages))
+        if self.docs_dirs and self.blog_pages:
+            if not self.blog_html:            
+                self.blog_html = self.generate_html(self.sorted_pages(self.blog_pages))
 
-        if not self.tags_page_html:
+            result = BLOG_PAGE_PATTERN.subn(
+                self.blog_html,
+                output,
+            )
+        
+            # There are matches
+            if result[1]:
+                """
+                Add js script to the end of the document to manipulate paging
+                bahaviours.
+                """
+                output = result[0] + SCRIPTS
+        
+        if "tags" in self.features and self.tags:
             tag_names = [tag for tag in self.tags]
             sorted_entries = {tag: self.sorted_pages(self.tags[tag]) for tag in self.tags}
-            self.tags_page_html = self.tags_template.render(
-                tags=tag_names, entries=sorted_entries, tag_base_dir=self.get_tag_abs_url())
+            if not self.tags_page_html:
+                self.tags_page_html = self.tags_index_template.render(
+                    tags=tag_names, entries=sorted_entries, index_url=self.tags_index_url)
 
-        result = BLOG_PAGE_PATTERN.subn(
-            self.blog_html,
-            output,
-        )
+            output = TAG_PAGE_PATTERN.sub(self.tags_page_html, output)
         
-        # There are matches
-        if result[1]:
-            """
-            Add js script to the end of the document to manipulate paging
-            bahaviours.
-            """
-            output = result[0] + SCRIPTS
-
-        output = TAG_PAGE_PATTERN.sub(self.tags_page_html, output)
-
         return output
-
-    def on_post_build(self, config):
-        if "tags" in self.features and self.tags:
-            tag_abs_dir = self.get_tag_abs_dir()
-            html = ""
-            
-            with open(tag_abs_dir + f"{self.tag_tmp_file_name}.html") as file:
-                html = file.read()
-            
-            # Build blog page for each tag
-            for tag in self.tags:
-                abs_url = tag_abs_dir + tag
-                if not os.path.isdir(abs_url):
-                    os.mkdir(abs_url)
-                content = f"<h3><code>#{tag}</code></h3>\n"
-                pages = self.sorted_pages(self.tags[tag])
-                content += self.generate_html(pages)
-                result = html.replace(PLACEHOLDER, content) + SCRIPTS
-                with open(abs_url + "/index.html", "w") as file:
-                    file.write(result)
-
-            os.remove(tag_abs_dir + f"{self.tag_tmp_file_name}.md")
-            os.remove(tag_abs_dir+ f"{self.tag_tmp_file_name}.html")
     
     def get_template(self, config):
         if self.config.get("template"):
@@ -265,17 +250,8 @@ class BloggingPlugin(BasePlugin):
                 pages=blog_pages, page_size=self.size, 
                 paging=self.paging, is_revision=self.sort["by"] == "revision",
                 show_total=self.show_total, theme_options=theme_options,
-                tag_base_dir=self.get_tag_abs_url(), show_tags="tags" in self.features
+                index_url=self.tags_index_url, show_tags="tags" in self.features
             )
-    
-    def get_tag_rel_dir(self) -> str:
-        return self.features["dir"] if "dir" in self.features else "tag"
-    
-    def get_tag_abs_dir(self) -> str:
-        return self.site_dir + "/" + self.get_tag_rel_dir() + "/"
-    
-    def get_tag_abs_url(self) -> str:
-        return self.site_url + self.get_tag_rel_dir()  + "/"
     
     def sorted_pages(self, pages):
         return sorted(pages,

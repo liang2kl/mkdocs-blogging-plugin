@@ -1,10 +1,10 @@
-{% from "blog-tags.html" import render_tags %}
+{% from "blog-tags-render.html" import render_tags %}
 
 {% call render_tags(tags, tag_base_dir) %}
 {% endcall %}
 
 {% for entry in entries %}
-<h3>#{{ entry }}</h3>
+<h3 id="{{ entry }}">#{{ entry }}</h3>
     {% for page in entries[entry] %}
         {% set time = "" %}
             {% if page.meta["localized-time"] %}
