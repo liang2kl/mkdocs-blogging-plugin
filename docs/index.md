@@ -12,15 +12,17 @@ pip3 install mkdocs-blogging-plugin
 
 ## Prerequisites
 
-- Only `material` theme is adapted by far (pull requests are welcome).
-- `navigation.instant` feature cannot be enabled if blog paging is on.
-- Windows is not supported currently (pull requests are welcome).
+- Only `material` theme is adapted by far
+- `navigation.instant` feature cannot be enabled if blog paging is on
+- Windows is not supported currently
+
+Pull requests are welcome to break these constraints.
 
 ## Usage
 
 Add `blogging` in `plugins` and specify the directories to be included:
 
-```yml
+``` yaml title="mkdocs.yml"
 plugins:
   - blogging:
       dirs: # The directories to be included
@@ -29,7 +31,7 @@ plugins:
 
 In the page you want to insert the blog content, just add a line `{{ blog_content }}` into your desired place:
 
-```markdown
+```markdown title="blog index page"
 # Blogs
 
 {{ blog_content }}
@@ -37,16 +39,37 @@ In the page you want to insert the blog content, just add a line `{{ blog_conten
 
 Optionally, in your articles, add meta tags providing their titles and descriptions, which will be displayed on the blog page:
 
-```markdown
+```markdown title="article"
 ---
 title: Lorem ipsum dolor sit amet
 description: Nullam urna elit, malesuada eget finibus ut, ac tortor.
 ---
 ```
 
+Additionally, you can also set tags for all articles, which can be access on certain pages. First, turn on this feature in the configuration:
+
+```yaml title="mkdocs.yml"
+plugins:
+  - blogging:
+      features:
+        tags: {}
+```
+
+And in articles:
+
+```markdown title="article"
+---
+tags:
+  - mkdocs
+  - blogging
+---
+```
+
+For more detail, check [Features - tags](features.md#tags).
+
 To exclude certain pages from the blog collection, add a meta tag `exculde_from_blog` in the meta section of the markdown file:
 
-```markdown
+```markdown title="article"
 ---
 exculde_from_blog: true
 ---
@@ -58,9 +81,12 @@ And it's done! You can open the page where you insert `{{ blog_content }}` and s
 
 Configure the plugin via following options:
 
-```yml
+```yaml title="mkdocs.yml"
 theme:             # Use a predefined theme
   name: card
+features:          # Additional features
+  tags:
+    ...
 size: 5            # Number of articles in one page, default: 10
 locale: en         # The locale for time localizations, default: system's locale
 sort: 
@@ -75,13 +101,13 @@ template: blog-override.html # Path to customized template
 
 For more about themes and custom templates, see [Themes](theme.md) and [Template](theme.md) respectively.
 
-## Publish on Github Pages
+## Publish with Github Pages
 
 A few more steps need to be taken for hosting with Github Pages:
 
 **Set `fetch-depth` to `0` when checking out with `actions/checkout`**
 
-```yml
+```yaml title="github action"
 - uses: actions/checkout@v2
   with:
     fetch-depth: 0
@@ -92,8 +118,10 @@ If it is not set, the plugin will take the latest commit time as fallback.
 
 **Configure your locale in the plugin's configuration**
 
-```yml
-locale: zh-CN
+```yaml title="article"
+plugins:
+  - blogging:
+      locale: zh-CN
 ```
 
 Otherwise, the plugin will use locale of the server, which might not be expected.
