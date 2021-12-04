@@ -12,7 +12,6 @@ A mkdocs plugin that generates a blog page listing selected pages, sorted by tim
 
 - Only `material` theme is adapted by far
 - `navigation.instant` feature cannot be enabled if blog paging is on
-- Windows is not supported currently
 
 Pull requests are welcome to break these constraints.
 
