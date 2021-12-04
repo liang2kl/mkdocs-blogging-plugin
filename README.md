@@ -19,7 +19,11 @@ Pull requests are welcome to break these constraints.
 ## Installation
 
 ```shell
+# macOS or Linux
 pip3 install mkdocs-blogging-plugin
+
+# Windows
+pip install mkdocs-blogging-plugin
 ```
 
 ## Usage

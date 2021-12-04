@@ -7,14 +7,17 @@ title: Setup
 ## Installation
 
 ```shell
+# macOS or Linux
 pip3 install mkdocs-blogging-plugin
+
+# Windows
+pip install mkdocs-blogging-plugin
 ```
 
 ## Prerequisites
 
 - Only `material` theme is adapted by far
 - `navigation.instant` feature cannot be enabled if blog paging is on
-- Windows is not supported currently
 
 Pull requests are welcome to break these constraints.
 
