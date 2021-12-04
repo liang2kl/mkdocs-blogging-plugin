@@ -2,17 +2,17 @@ import os, logging
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from .util import Util
+from pathlib import Path
 import re, os
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+DIR_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 BLOG_PAGE_PATTERN = re.compile(r"\{\{\s*blog_content\s*\}\}", flags=re.IGNORECASE)
 TAG_PAGE_PATTERN = re.compile(r"\{\{\s*tag_content\s*\}\}", flags=re.IGNORECASE)
 PLACEHOLDER = "{{ PLACEHOLDER }}"
 THEMES = ["card", "button"]
-file = open(DIR_PATH + "/templates/pagination.js")
+file = open(DIR_PATH / "templates" / "pagination.js")
 SCRIPTS = "<script>" + file.read() + "</script>"
 del file
 
@@ -86,7 +86,7 @@ class BloggingPlugin(BasePlugin):
             self.get_template(config)
 
         self.size = self.config.get("size")
-        self.docs_dirs = self.config.get("dirs")
+        self.docs_dirs = [Path(path) for path in self.config.get("dirs")]
         self.paging = self.config.get("paging")
         self.sort = self.config.get("sort")
         self.show_total = self.config.get("show_total")
@@ -116,9 +116,9 @@ class BloggingPlugin(BasePlugin):
                 )
                 self.theme = None
 
-        search_paths = [DIR_PATH + "/templates"]
+        search_paths = [DIR_PATH / "templates"]
         if self.template_file:
-            search_paths.append(os.path.dirname(self.template_file))
+            search_paths.append(self.template_file.parents[0])
 
         env = Environment(
             loader=FileSystemLoader(search_paths),
@@ -126,7 +126,7 @@ class BloggingPlugin(BasePlugin):
         )
 
         self.template = env.get_template(
-            os.path.basename(self.template_file) if self.template_file else 
+            self.template_file.name if self.template_file else 
                 (f"blog-{self.theme['name']}-theme.html" if self.theme else "blog.html")
         )
 
@@ -137,20 +137,13 @@ class BloggingPlugin(BasePlugin):
         if "tags" in self.features:
             index_path = self.features["tags"].get("index_page")
             if index_path:
-                index_url = self.site_url + index_path
-                if index_url[-3:] == ".md":
-                    self.tags_index_url = index_url[:-3]
-                else:
-                    self.tags_index_url = index_url
+                index_path = Path(index_path)
+                self.tags_index_url = self.site_url + (index_path.parents[0] / index_path.stem).as_posix()
 
         if self.config.get("locale"):
             self.locale = self.config.get("locale")
         else:
             self.locale = config.get("locale")
-
-        for index, dir in enumerate(self.docs_dirs):
-            if dir[-1:] != "/":
-                self.docs_dirs[index] += "/"
 
         # Remove all pages to adapt live reload
         self.blog_pages = []
@@ -197,8 +190,10 @@ class BloggingPlugin(BasePlugin):
         if "exclude_from_blog" in page.meta and page.meta["exclude_from_blog"]:
             return
 
+        file_path = Path(page.file.src_path)
         for dir in self.docs_dirs:
-            if page.file.src_path[:len(dir)] == dir:
+            dir_path = Path(dir)
+            if file_path.parents[0] == dir_path:
                 timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path, is_first_commit=self.sort["by"] != "revision")
                 page.meta["git-timestamp"] = timestamp
                 page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, self.locale)
@@ -229,16 +224,16 @@ class BloggingPlugin(BasePlugin):
             sorted_entries = {tag: self.sorted_pages(self.tags[tag]) for tag in self.tags}
             if not self.tags_page_html:
                 self.tags_page_html = self.tags_index_template.render(
-                    tags=tag_names, entries=sorted_entries, index_url=self.tags_index_url)
-
+                    tags=tag_names, entries=sorted_entries,
+                    index_url=self.tags_index_url)
             output = TAG_PAGE_PATTERN.sub(self.tags_page_html, output)
         
         return output
     
     def get_template(self, config):
         if self.config.get("template"):
-            root_url = os.path.dirname(config.get("config_file_path"))
-            self.template_file = root_url + "/" + self.config.get("template")
+            root_url = Path(config.get("config_file_path")).parents[0]
+            self.template_file = root_url / self.config.get("template")
 
     def generate_html(self, pages) -> str:
         blog_pages = sorted(pages, 
@@ -254,6 +249,7 @@ class BloggingPlugin(BasePlugin):
             )
     
     def sorted_pages(self, pages):
+        # print(pages[0].__dict__)
         return sorted(pages,
             key=lambda page: page.meta["git-timestamp"], 
             reverse=self.sort["from"] == "new")
