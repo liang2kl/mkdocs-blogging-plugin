@@ -102,7 +102,7 @@ show_total: false  # Remove 'total pages' label
 template: blog-override.html # Path to customized template
 ```
 
-For more about themes and custom templates, see [Themes](theme.md) and [Template](theme.md) respectively.
+For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
 ## Publish with Github Pages
 
