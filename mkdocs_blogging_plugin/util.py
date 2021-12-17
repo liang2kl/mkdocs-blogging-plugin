@@ -134,7 +134,7 @@ class Util:
         return int(commit_timestamp)
 
     @staticmethod
-    def get_localized_date(timestamp: int, day_only: bool, format: str=None, _locale: str=None) -> str:
+    def get_localized_date(timestamp: float, day_only: bool, format: str=None, _locale: str=None) -> str:
         time = datetime.fromtimestamp(timestamp)
         if format:
             return datetime.strftime(time, format)
