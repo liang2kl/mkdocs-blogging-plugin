@@ -12,7 +12,7 @@ del file
 
 setup(
     name="mkdocs-blogging-plugin",
-    version="1.1.0",
+    version="1.2.0",
     description="Mkdocs plugin that generates a blog index page sorted by creation date.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
