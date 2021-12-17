@@ -134,12 +134,15 @@ class Util:
         return int(commit_timestamp)
 
     @staticmethod
-    def get_localized_date(timestamp: int, day_only: bool, _locale: str=None) -> str:
-        if not _locale:
-            _locale = locale.getdefaultlocale()[0]
+    def get_localized_date(timestamp: int, day_only: bool, format: str=None, _locale: str=None) -> str:
         time = datetime.fromtimestamp(timestamp)
-
-        if day_only:
-            return format_date(time.date(), format="short", locale=_locale)
+        if format:
+            return datetime.strftime(time, format)
         else:
-            return format_datetime(time, format="short", locale=_locale)
+            if not _locale:
+                _locale = locale.getdefaultlocale()[0]
+
+            if day_only:
+                return format_date(time.date(), format="short", locale=_locale)
+            else:
+                return format_datetime(time, format="short", locale=_locale)

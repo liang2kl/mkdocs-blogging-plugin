@@ -5,6 +5,7 @@ from mkdocs.exceptions import PluginError
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from .util import Util
 from pathlib import Path
+from datetime import datetime, time
 import re, os
 
 DIR_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -27,12 +28,14 @@ class BloggingPlugin(BasePlugin):
         ("dirs", config_options.Type(list, default=[])),
         ("size", config_options.Type(int, default=10)),
         ("sort", config_options.Type(dict, default={"from": "new", "by": "creation"})),
+        ("meta_time_format", config_options.Type(str, default=None)),
         ("locale", config_options.Type(str, default=None)),
         ("paging", config_options.Type(bool, default=True)),
         ("show_total", config_options.Type(bool, default=True)),
         ("template", config_options.Type(str, default=None)),
         ("theme", config_options.Type(dict, default=None)),
         ("features", config_options.Type(dict, default={})),
+        ("time_format", config_options.Type(str, default=None)),
     )
 
     blog_pages = []
@@ -43,6 +46,8 @@ class BloggingPlugin(BasePlugin):
     docs_dirs = []
     size = 0
     sort = {}
+    meta_time_format = None
+    time_format = None
     locale = None
     paging = True
     show_total = True
@@ -89,9 +94,11 @@ class BloggingPlugin(BasePlugin):
         self.docs_dirs = [Path(path) for path in self.config.get("dirs")]
         self.paging = self.config.get("paging")
         self.sort = self.config.get("sort")
+        self.meta_time_format = self.config.get("meta_time_format")
         self.show_total = self.config.get("show_total")
         self.theme = self.config.get("theme")
         self.features = self.config.get("features")
+        self.time_format = self.config.get("time_format")
 
         if "from" not in self.sort:
             self.sort["from"] = "new"
@@ -194,9 +201,16 @@ class BloggingPlugin(BasePlugin):
         for dir in self.docs_dirs:
             dir_path = Path(dir)
             if file_path.parents[0] == dir_path:
-                timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path, is_first_commit=self.sort["by"] != "revision")
+                timestamp = None
+                if self.meta_time_format:
+                    if "time" in page.meta:
+                        timestamp = datetime.strptime(page.meta["time"], self.meta_time_format)
+                    elif "date" in page.meta:
+                        timestamp = datetime.strptime(page.meta["date"], self.meta_time_format)
+                if not timestamp:
+                    timestamp = self.util.get_git_commit_timestamp(page.file.abs_src_path, is_first_commit=self.sort["by"] != "revision")
                 page.meta["git-timestamp"] = timestamp
-                page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, self.locale)
+                page.meta["localized-time"] = self.util.get_localized_date(timestamp, False, format=self.time_format, locale=self.locale)
                 self.blog_pages.append(page)
 
                 break
