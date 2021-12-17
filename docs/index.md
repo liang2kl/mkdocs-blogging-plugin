@@ -109,7 +109,7 @@ When `meta_time_format` is set, for all posts with a `time` or `date` metadata, 
 use this format to parse the that time, and replace the time from git logs. This is
 useful to alter specific posts' time where git commit time is not accurate or desired.
 
-For more about themes and custom templates, see [Themes](theme.md) and [Template](theme.md) respectively.
+For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
 ## Publish with Github Pages
 
