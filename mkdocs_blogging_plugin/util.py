@@ -25,13 +25,23 @@ SOFTWARE.
 """
 
 """Utility class for mkdocs plugin."""
-
+import logging
+import os
+import time
+from git import (
+    Git,
+    Repo,
+    GitCommandError,
+    GitCommandNotFound,
+    InvalidGitRepositoryError,
+    NoSuchPathError,
+)
 
 from babel.dates import format_date, format_datetime
 import locale
 from datetime import datetime
-logger = logging.getLogger("mkdocs.plugins")
 
+logger = logging.getLogger("mkdocs.plugins")
 
 class Util:
     """Utility class.
@@ -48,10 +58,10 @@ class Util:
             path = os.path.dirname(path)
 
         if path not in self.repo_cache:
-            self.repo_cache[path] = Repo(
-                path, search_parent_directories=True).git
+            self.repo_cache[path] = Repo(path, search_parent_directories=True).git
 
         return self.repo_cache[path]
+
 
     def get_git_commit_timestamp(
             self,
@@ -84,7 +94,7 @@ class Util:
                 commit_timestamp = git.log(
                     realpath, date="short", format="%at", diff_filter="A"
                 )
-                # A file can be created multiple times, through a file renamed.
+                # A file can be created multiple times, through a file renamed. 
                 # Commits are ordered with most recent commit first
                 # Get the oldest commit only
                 if commit_timestamp != "":
@@ -124,7 +134,7 @@ class Util:
         return int(commit_timestamp)
 
     @staticmethod
-    def get_localized_date(timestamp: int, day_only: bool, format: str = None, _locale: str = None) -> str:
+    def get_localized_date(timestamp: int, day_only: bool, format: str=None, _locale: str=None) -> str:
         time = datetime.fromtimestamp(timestamp)
         if format:
             return datetime.strftime(time, format)
