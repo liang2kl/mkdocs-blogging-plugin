@@ -21,6 +21,12 @@ Pull requests are welcome to break these constraints.
 
 ## Usage
 
+Before setting up the plugin, set `site_url` to the url of your published site:
+
+``` yaml title="mkdocs.yml"
+site_url: https://liang2kl.github.io/mkdocs-blogging-plugin/
+```
+
 Add `blogging` in `plugins` and specify the directories to be included:
 
 ``` yaml title="mkdocs.yml"
