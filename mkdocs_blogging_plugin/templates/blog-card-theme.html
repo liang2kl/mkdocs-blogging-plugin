@@ -1,12 +1,12 @@
 {% extends "blog.html" %}
 
 {% macro render_tags(tags, base_url) -%}
-    <div class="blogging-tags-grid">
-        {% for tag in tags %}
-        <code style="color: var(--md-typeset-color)">#{{ tag }}</code>
-        {% endfor %}
-    </div>
-    {{ caller() }}
+<div class="blogging-tags-grid">
+    {% for tag in tags %}
+    <code style="color: var(--md-typeset-color)">#{{ tag }}</code>
+    {% endfor %}
+</div>
+{{ caller() }}
 {% endmacro %}
 
 {% if render_blog is not defined %}
@@ -58,11 +58,11 @@
     }
 
     .blog-override-post,
-    .blog-override-post>* {
+    .blog-override-post > * {
         transition: all 0.3s ease-in-out;
     }
 
-    .blog-override-post:hover>* {
+    .blog-override-post:hover > * {
         transform: translateX(30px);
     }
 
@@ -78,11 +78,11 @@
 
     @media only screen and (max-width: 1000px) {
         .blog-override-post,
-        .blog-override-post>* {
+        .blog-override-post > * {
             transition: none;
         }
 
-        .blog-override-post:hover>* {
+        .blog-override-post:hover > * {
             transform: none;
         }
 
