@@ -265,10 +265,13 @@ class BloggingPlugin(BasePlugin):
             self.template_file = root_url / self.config.get("template")
 
     def generate_html(self, pages) -> str:
-        blog_pages = sorted(pages,
-                            key=lambda page: page.meta["git-timestamp"],
-                            reverse=self.sort["from"] == "new"
-                            )
+        blog_pages = sorted(
+            pages,
+            key=lambda page: page.meta["git-timestamp"]
+            if "git-timestamp" in page.meta
+            else page,
+            reverse=self.sort["from"] == "new",
+        )
         theme_options = self.theme.get("options") if self.theme else []
         return self.template.render(
             pages=blog_pages, page_size=self.size,
@@ -279,6 +282,10 @@ class BloggingPlugin(BasePlugin):
 
     def sorted_pages(self, pages):
         # print(pages[0].__dict__)
-        return sorted(pages,
-                      key=lambda page: page.meta["git-timestamp"],
-                      reverse=self.sort["from"] == "new")
+        return sorted(
+            pages,
+            key=lambda page: page.meta["git-timestamp"]
+            if "git-timestamp" in page.meta
+            else page,
+            reverse=self.sort["from"] == "new",
+        )
