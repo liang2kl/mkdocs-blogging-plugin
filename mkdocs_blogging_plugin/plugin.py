@@ -217,8 +217,11 @@ class BloggingPlugin(BasePlugin):
                             page.meta["date"], self.meta_time_format).timestamp()
                 if not timestamp:
                     timestamp = self.util.get_git_commit_timestamp(
-                        page.file.abs_src_path, is_first_commit=self.sort["by"] != "revision")
-                page.meta["git-timestamp"] = timestamp
+                        page.file.abs_src_path,
+                        is_first_commit=self.sort["by"] != "revision",
+                    )
+                if "git-timestamp" in page.meta:
+                    page.meta["git-timestamp"] = timestamp
                 page.meta["localized-time"] = self.util.get_localized_date(
                     timestamp, False, format=self.time_format, _locale=self.locale)
                 self.blog_pages.append(page)
