@@ -267,9 +267,7 @@ class BloggingPlugin(BasePlugin):
     def generate_html(self, pages) -> str:
         blog_pages = sorted(
             pages,
-            key=lambda page: page.meta["git-timestamp"]
-            if "git-timestamp" in page.meta
-            else page,
+            key=lambda page: page.meta.get("git-timestamp"),
             reverse=self.sort["from"] == "new",
         )
         theme_options = self.theme.get("options") if self.theme else []
@@ -284,7 +282,7 @@ class BloggingPlugin(BasePlugin):
         # print(pages[0].__dict__)
         return sorted(
             pages,
-            key=lambda page: page.meta["git-timestamp"]
+            key=lambda page: page.meta.get("git-timestamp")
             if "git-timestamp" in page.meta
             else page,
             reverse=self.sort["from"] == "new",
