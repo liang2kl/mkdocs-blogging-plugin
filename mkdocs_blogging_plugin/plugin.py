@@ -1,14 +1,18 @@
-import os
 import logging
-from mkdocs.config import config_options
-from mkdocs.plugins import BasePlugin
-from mkdocs.exceptions import PluginError
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-from .util import Util
-from pathlib import Path
-from datetime import datetime, time
-import re
 import os
+import re
+import typing as T
+from datetime import datetime, time
+from pathlib import Path
+
+import mkdocs
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from mkdocs.config import config_options
+from mkdocs.exceptions import PluginError
+from mkdocs.plugins import BasePlugin
+from mkdocs.structure.pages import Page
+
+from .util import Util
 
 DIR_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 BLOG_PAGE_PATTERN = re.compile(
@@ -267,7 +271,7 @@ class BloggingPlugin(BasePlugin):
     def generate_html(self, pages) -> str:
         blog_pages = sorted(
             pages,
-            key=lambda page: page.meta.get("git-timestamp"),
+            key=get_key,
             reverse=self.sort["from"] == "new",
         )
         theme_options = self.theme.get("options") if self.theme else []
@@ -280,10 +284,19 @@ class BloggingPlugin(BasePlugin):
 
     def sorted_pages(self, pages):
         # print(pages[0].__dict__)
-        return sorted(
-            pages,
-            key=lambda page: page.meta.get("git-timestamp")
-            if "git-timestamp" in page.meta
-            else page,
-            reverse=self.sort["from"] == "new",
-        )
+        try:
+            return sorted(
+                pages,
+                key=get_key,
+                reverse=self.sort["from"] == "new",
+            )
+        except TypeError as err:
+            raise err
+
+
+def get_key(page: Page) -> T.Tuple[T.Optional[str], ...]:
+    return (
+        page.meta.get("git-timestamp"),
+        page.meta.get("url"),
+        page.meta.get("title"),
+    )
