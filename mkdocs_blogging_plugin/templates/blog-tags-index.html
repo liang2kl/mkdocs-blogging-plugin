@@ -1,9 +1,6 @@
-{% from "blog-tags-render.html" import render_tags, get_tags_style %}
+{% from "blog-tags-render.html" import render_tags %}
 
 {% call render_tags(tags, index_url) %}
-{% endcall %}
-
-{% call get_tags_style() %}
 {% endcall %}
 
 {% for entry in entries %}
