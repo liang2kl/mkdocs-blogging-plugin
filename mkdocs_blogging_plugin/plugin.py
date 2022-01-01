@@ -206,7 +206,7 @@ class BloggingPlugin(BasePlugin):
         file_path = Path(page.file.src_path)
         for dir in self.docs_dirs:
             dir_path = Path(dir)
-            if file_path.parents[0] == dir_path:
+            if dir_path in file_path.parents:
                 timestamp = None
                 if self.meta_time_format:
                     if "time" in page.meta:
