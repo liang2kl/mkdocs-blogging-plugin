@@ -96,8 +96,8 @@ features:          # Additional features
     ...
 size: 5            # Number of articles in one page, default: 10
 locale: en         # The locale for time localizations, default: system's locale
-time_format: '%Y-%m-%d %h:%m:%s' # The format used to display the time
-meta_time_format: '%Y-%m-%d %h:%m:%s' # The format used to parse the time from meta
+time_format: '%Y-%m-%d %H:%M:%S' # The format used to display the time
+meta_time_format: '%Y-%m-%d %H:%M:%S' # The format used to parse the time from meta
 sort: 
   from: new        # Sort from new to old, default
   # or old         # Sort from old to new
@@ -114,6 +114,8 @@ template: blog-override.html # Path to customized template
 When `meta_time_format` is set, for all posts with a `time` or `date` metadata, the plugin will
 use this format to parse the that time, and replace the time from git logs. This is
 useful to alter specific posts' time where git commit time is not accurate or desired.
+
+[List of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
 
 For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
