@@ -85,3 +85,11 @@ These variables are available inside your template:
 - `show_total`: whether to show the total number of the blog
 
 You can refer to the original template for help.
+
+## Access to the Original MkDocs Template Variables
+
+Use `mkdocs_context` inside your template to access variables that are available inside MkDocs' templates. For example, to access `base_url`:
+
+```jinja
+<img href="{{ mkdocs_context.base_url }}/img/1.png" alt="">
+```

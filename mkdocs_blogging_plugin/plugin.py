@@ -70,6 +70,7 @@ class BloggingPlugin(BasePlugin):
     tags = {}
     tags_page_html = None
     tags_index_url = ""
+    mkdocs_template_context = None
 
     util = Util()
 
@@ -162,6 +163,10 @@ class BloggingPlugin(BasePlugin):
         # Remove all pages to adapt live reload
         self.blog_pages = []
         self.tags = {}
+
+    def on_template_context(self, context, template_name, config):
+        self.mkdocs_template_context = context
+        return context
 
     def on_page_markdown(self, markdown, page, config, files):
         if "tags" in self.features and "tags" in page.meta:
@@ -257,7 +262,8 @@ class BloggingPlugin(BasePlugin):
             pages=blog_pages, page_size=self.size,
             paging=self.paging, is_revision=self.sort["by"] == "revision",
             show_total=self.show_total, theme_options=theme_options,
-            index_url=self.tags_index_url, show_tags="tags" in self.features
+            index_url=self.tags_index_url, show_tags="tags" in self.features,
+            mkdocs_context=self.mkdocs_template_context
         )
 
     def sorted_pages(self, pages):
