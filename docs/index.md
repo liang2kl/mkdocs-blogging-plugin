@@ -108,14 +108,18 @@ show_total: false  # Remove 'total pages' label
 template: blog-override.html # Path to customized template
 ```
 
-`time_format` is used to change the display style of the time, with higher priority than `locale`. 
+These parameters deserve special care:
 
-`meta_time_format` is used to tell the plugin how to parse the given time string from the meta. 
+- `time_format` is used to change the display style of the time, with higher priority than `locale`. 
+
+- `meta_time_format` is used to tell the plugin how to parse the given time string from the meta. 
 When `meta_time_format` is set, for all posts with a `time` or `date` metadata, the plugin will
 use this format to parse the that time, and replace the time from git logs. This is
 useful to alter specific posts' time where git commit time is not accurate or desired.
+See [the list of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes).
 
-[List of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
+- When `paging` is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
+`size` posts will be displayed and *the rest will not*.
 
 For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 

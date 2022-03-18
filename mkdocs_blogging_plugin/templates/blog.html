@@ -77,7 +77,7 @@ SOFTWARE.
 {% if page_num == 0 or not paging %}
     {% set page_num = 1 %}
     {% if not paging %}
-        {% set page_size = 10000 %}
+        {% set page_size = (10000 if page_size == -1 else page_size) %}
     {% endif %}
 {% endif %}
 
