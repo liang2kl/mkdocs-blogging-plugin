@@ -50,7 +50,7 @@ class BloggingPlugin(BasePlugin):
 
     # Config
     docs_dirs = []
-    size = 0
+    size = -1
     sort = {}
     meta_time_format = None
     time_format = None

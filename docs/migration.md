@@ -18,3 +18,11 @@ Breaking changes:
 - Introduced new reserved template file names: `blog-*.html`. 
     - **Effect:** If you have templates using these names, they might stop working now or in the future.
     - **Workaround:** Rename them if your existing names of your templates have this pattern.
+
+## To v1.4.0
+
+Breaking changes:
+
+- Change post display behaviour when paging is disabled. 
+    - **Effect:** Posts will be truncated if `paging = false` and `size` co-exist.
+    - **Workaround:** If you need to keep all posts when paging is disabled, remove `size`.
