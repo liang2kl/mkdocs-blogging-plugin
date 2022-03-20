@@ -93,6 +93,11 @@ class BloggingPlugin(BasePlugin):
                               "cannot be enabled with option 'paging' on.")
 
         self.site_url = config.get("site_url")
+        if self.site_url is None:
+            raise PluginError(
+                "[blogging-plugin] Please specify `site_url` setting in your `mkdocs.yml` file. The blog index "
+                "page will not properly function otherwise. Example:\n\n    site_url: https://myblog.com",
+            )
 
         if not self.template_file:
             self.get_template(config)
