@@ -1,4 +1,4 @@
-The `template` entry in the configuration allows you to override the appearance of the blog page.
+The `template` entry in the *category settings* allows you to override the appearance of the blog page.
 
 To customize the appearance, create an HTML template with name **other than `blog.html` and `blog-*.html`**, then provide
 **the path relative to the parent directory of `mkdocs.yml`** to the plugin's configuration.
