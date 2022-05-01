@@ -1,10 +1,13 @@
 # mkdocs-blogging-plugin
 
-A mkdocs plugin that generates a blog page listing selected pages, sorted by time.
+A mkdocs plugin that generates a blog page listing selected pages, sorted by time. It supports:
 
-- Automatically generates a blog index page
-- Can be grouped by tags
-- Support deep customization without dirty work
+- Blog index pages generation
+- Category level customization
+- Template-based customization
+- Tags
+
+Demo site: https://liang2kl.github.io/mkdocs-blogging-plugin-example
 
 ![preview](https://s2.loli.net/2021/12/03/GqhwCYTsimlkXK1.png)
 

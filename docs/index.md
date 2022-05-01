@@ -27,7 +27,10 @@ Before setting up the plugin, set `site_url` to the url of your published site:
 site_url: https://liang2kl.github.io/mkdocs-blogging-plugin/
 ```
 
-Add `blogging` in `plugins` and specify the directories to be included:
+### Basic
+
+Add `blogging` in `plugins` and specify the directories to be included. This is the
+minimum configuration needed.
 
 ``` yaml title="mkdocs.yml"
 plugins:
@@ -36,13 +39,17 @@ plugins:
         - blog
 ```
 
-In the page you want to insert the blog content, just add a line `{{ blog_content }}` into your desired place:
+In the page you want to insert the blog content, add a line `{{ blog_content }}` into your desired place:
 
 ```markdown title="blog index page"
 # Blogs
 
 {{ blog_content }}
 ```
+
+That's all. You can open the page where you insert `{{ blog_content }}` and see how it is working.
+
+### More Configurations
 
 Optionally, in your articles, add meta tags providing their titles and descriptions, which will be displayed on the blog page:
 
@@ -53,7 +60,7 @@ description: Nullam urna elit, malesuada eget finibus ut, ac tortor.
 ---
 ```
 
-Additionally, you can also set tags for all articles, which can be access on certain pages. First, turn on this feature in the configuration:
+You can also set tags for all articles. First, turn on this feature in the configuration:
 
 ```yaml title="mkdocs.yml"
 plugins:
@@ -74,7 +81,7 @@ tags:
 
 For more detail, check [Features - tags](features.md#tags).
 
-To exclude certain pages from the blog collection, add a meta tag `exculde_from_blog` in the meta section of the markdown file:
+Finally, to exclude certain pages from the blog collection, add a meta tag `exculde_from_blog` in the meta section of the markdown file:
 
 ```markdown title="article"
 ---
@@ -82,22 +89,23 @@ exculde_from_blog: true
 ---
 ```
 
-And it's done! You can open the page where you insert `{{ blog_content }}` and see how it is working.
-
 ## Options
 
-Configure the plugin via following options:
+### Category-specific Settings
 
-```yaml title="mkdocs.yml"
-theme:             # Use a predefined theme
-  name: card
-features:          # Additional features
-  tags:
-    ...
+The plugin supports generating different blog index pages based on a concept
+named *category*. You can specify the included directories for each category
+and configure the customizing options seperately. It enables you to setup multiple
+blog index pages, each with specific purpose.
+For example, one might setup a page for technical articles, and another for life recording.
+
+The category-specific settings include:
+
+```yaml title="category settings"
+dirs:              # The directories included in the category
+  - reviews
+  - ...
 size: 5            # Number of articles in one page, default: 10
-locale: en         # The locale for time localizations, default: system's locale
-time_format: '%Y-%m-%d %H:%M:%S' # The format used to display the time
-meta_time_format: '%Y-%m-%d %H:%M:%S' # The format used to parse the time from meta
 sort: 
   from: new        # Sort from new to old, default
   # or old         # Sort from old to new
@@ -106,22 +114,64 @@ sort:
 paging: false      # Disable paging
 show_total: false  # Remove 'total pages' label
 template: blog-override.html # Path to customized template
+theme:             # Use a predefined theme
+  name: card
 ```
 
-These parameters deserve special care:
+For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
-- `time_format` is used to change the display style of the time, with higher priority than `locale`. 
+The structure for the configuration in `mkdocs.yml`:
 
-- `meta_time_format` is used to tell the plugin how to parse the given time string from the meta. 
+```yaml title="mkdocs.yml"
+plugins:
+  - blogging:
+      # --- GLOBAL-CATEGORY: configs for {{ blog_content }} ---
+      dirs:
+        - blogs
+      size: 5
+      ...
+      # --- END GLOBAL CATEGORY ---
+
+      # --- INDIVIDUAL CATEGORIES: configs for {{ blog_content name }} ---
+      categories:
+        - name: review
+          dirs:
+            - review
+          size: 5
+          ...
+      # --- END INDIVIDUAL CATEGORIES ---
+```
+
+Noted that you can either setup settings mentioned above at the root level of the plugin config,
+or define them within a specific category. The former will apply to `{{ blog_content }}`, and the
+latter will apply to `{{ blog_content name }}`, where `name` is the name of the category.
+
+### Global Settings
+
+Aside from the category settings, there are some globally applied options, which should be defined
+at the root level of the plugin configuration:
+
+```yaml title="mkdocs.yml"
+features:          # Additional features
+  tags:
+    ...
+locale: en         # The locale for time localizations, default: system's locale
+time_format: '%Y-%m-%d %H:%M:%S' # The format used to display the time
+meta_time_format: '%Y-%m-%d %H:%M:%S' # The format used to parse the time from meta
+```
+
+Of all the options mentioned above, these parameters deserve special attention:
+
+- `time_format` in *global settings* is used to change the display style of the time, with higher priority than `locale`. 
+
+- `meta_time_format` in *global settings* is used to tell the plugin how to parse the given time string from the meta. 
 When `meta_time_format` is set, for all posts with a `time` or `date` metadata, the plugin will
 use this format to parse the that time, and replace the time from git logs. This is
-useful to alter specific posts' time where git commit time is not accurate or desired.
+useful to alter specific posts' time when git commit time is not accurate or desired.
 See [the list of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes).
 
-- When `paging` is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
+- When `paging` in *category settings* is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
 `size` posts will be displayed and *the rest will not*.
-
-For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
 ## Publish with Github Pages
 
