@@ -107,7 +107,7 @@ class BloggingPlugin(BasePlugin):
         if self.config.get("locale"):
             self.locale = self.config.get("locale")
         else:
-            self.locale = config.get("locale")
+            self.locale = global_config.get("locale")
 
         # Read in configs of all categories
         self.categories["global"] = BloggingConfig(self.config)

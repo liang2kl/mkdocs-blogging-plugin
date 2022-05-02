@@ -1,6 +1,3 @@
-from email.policy import default
-from mkdocs.config import config_options
-
 class BloggingConfig:
     dirs: list
     size: int
