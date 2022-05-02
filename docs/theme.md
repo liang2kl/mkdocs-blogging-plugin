@@ -1,4 +1,6 @@
-The plugin has some built-in themes, you can select one as alternative. If you are to use one of them, in the plugin's config, specify the theme's name, and optionally specify some options to customize the appearance.
+You can select one from the plugin's built-in themes to render your content. If you are to use one of them, in the plugin's config, specify the theme's name, and optionally specify some options to customize the appearance.
+
+Note that this is a *category-specific* setting, so you should set them for each category seperately.
 
 ```yaml title="mkdocs.yml"
 plugins:

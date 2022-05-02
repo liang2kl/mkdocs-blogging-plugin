@@ -1,4 +1,4 @@
-The `template` entry in the configuration allows you to override the appearance of the blog page.
+The `template` entry in the *category settings* allows you to override the appearance of the blog page.
 
 To customize the appearance, create an HTML template with name **other than `blog.html` and `blog-*.html`**, then provide
 **the path relative to the parent directory of `mkdocs.yml`** to the plugin's configuration.
@@ -88,8 +88,8 @@ You can refer to the original template for help.
 
 ## Access to the Original MkDocs Template Variables
 
-Use `mkdocs_context` inside your template to access variables that are available inside MkDocs' templates. For example, to access `base_url`:
+Use `mkdocs_context` inside your template to access variables that are available inside MkDocs' templates. For example, to access `config.site_url`:
 
 ```jinja
-<img href="{{ mkdocs_context.base_url }}/img/1.png" alt="">
+<img src="{{ mkdocs_context.config.site_url }}/img/1.png" alt="">
 ```
