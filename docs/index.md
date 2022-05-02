@@ -94,12 +94,12 @@ exculde_from_blog: true
 ### Category-specific Settings
 
 The plugin supports generating different blog index pages based on a concept
-named *category*. You can specify the included directories for each category
-and configure the customizing options seperately. It enables you to setup multiple
+named *category*. It enables you to setup multiple
 blog index pages, each with specific purpose.
 For example, one might setup a page for technical articles, and another for life recording.
 
-The category-specific settings include:
+You can specify the included directories for each category
+and configure the options seperately. The *category-specific* settings include:
 
 ```yaml title="category settings"
 dirs:              # The directories included in the category
@@ -118,38 +118,39 @@ theme:             # Use a predefined theme
   name: card
 ```
 
-For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
-
 The structure for the configuration in `mkdocs.yml`:
 
 ```yaml title="mkdocs.yml"
 plugins:
   - blogging:
-      # --- GLOBAL-CATEGORY: configs for {{ blog_content }} ---
+      # GLOBAL CATEGORY: configs for {{ blog_content }}
       dirs:
         - blogs
       size: 5
       ...
-      # --- END GLOBAL CATEGORY ---
 
-      # --- INDIVIDUAL CATEGORIES: configs for {{ blog_content name }} ---
+      # INDIVIDUAL CATEGORIES: configs for {{ blog_content name }}
       categories:
         - name: review
           dirs:
             - review
           size: 5
           ...
-      # --- END INDIVIDUAL CATEGORIES ---
 ```
 
-Noted that you can either setup settings mentioned above at the root level of the plugin config,
+To generate a blog page for a category, place `{{ blog_content name }}` in your markdown file,
+where `name` is the name of the category.
+
+Note that you can either setup settings mentioned above at the top level of the plugin config,
 or define them within a specific category. The former will apply to `{{ blog_content }}`, and the
-latter will apply to `{{ blog_content name }}`, where `name` is the name of the category.
+latter will apply to `{{ blog_content name }}`.
+
+For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
 ### Global Settings
 
 Aside from the category settings, there are some globally applied options, which should be defined
-at the root level of the plugin configuration:
+at the top level of the plugin configuration:
 
 ```yaml title="mkdocs.yml"
 features:          # Additional features
@@ -160,7 +161,7 @@ time_format: '%Y-%m-%d %H:%M:%S' # The format used to display the time
 meta_time_format: '%Y-%m-%d %H:%M:%S' # The format used to parse the time from meta
 ```
 
-Of all the options mentioned above, these parameters deserve special attention:
+Of all the options mentioned above, these ones deserve special attention:
 
 - `time_format` in *global settings* is used to change the display style of the time, with higher priority than `locale`. 
 
@@ -186,7 +187,7 @@ A few more steps need to be taken for hosting with Github Pages:
 ```
 
 Creation and revision time for articles rely on git logs, so a complete respository is required.
-If it is not set, the plugin will take the latest commit time as fallback.
+If it is not set, the plugin will take the build time as fallback.
 
 **Configure your locale in the plugin's configuration**
 
