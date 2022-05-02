@@ -1,6 +1,7 @@
 import os
 import logging
 import re
+from typing import Dict
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
@@ -73,7 +74,7 @@ class BloggingPlugin(BasePlugin):
     tags_index_url = ""
 
     # Configs
-    categories: dict[str, BloggingConfig] = {}
+    categories: Dict[str, BloggingConfig] = {}
 
     # Blog pages
     pages = {
@@ -84,7 +85,7 @@ class BloggingPlugin(BasePlugin):
     }
 
     # Templates
-    jinja_templates: dict[str, Template] = {}
+    jinja_templates: Dict[str, Template] = {}
 
     def read_in_config(self, global_config):
         # Return if the config has already been read
