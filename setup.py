@@ -1,18 +1,14 @@
 from setuptools import find_packages, setup
 
-file = open("README.md", "r")
-LONG_DESCRIPTION = file.read()
-file.close()
+with open("README.md", "r") as file:
+    LONG_DESCRIPTION = file.read()
 
-file = open("requirements.txt", "r")
-DEPENDENCIES = file.readlines()
-file.close()
-
-del file
+with open("requirements.txt", "r") as file:
+    DEPENDENCIES = file.readlines()
 
 setup(
     name="mkdocs-blogging-plugin",
-    version="1.4.1",
+    version="2.0.0",
     description="Mkdocs plugin that generates a blog index page sorted by creation date.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
