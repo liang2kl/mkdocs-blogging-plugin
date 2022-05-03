@@ -184,10 +184,8 @@ class BloggingPlugin(BasePlugin):
             )
             self.jinja_templates[name] = jinja_template
 
-        self.tags_index_template = env.get_template("blog-tags-index.html")
-        self.tags_template = env.get_template("blog-tags.html")
-
         # Setup tags
+        self.tags_index_template = env.get_template("blog-tags-index.html")
         self.tags_template = env.get_template("blog-tags.html")
 
         if "tags" in self.features:
@@ -196,9 +194,6 @@ class BloggingPlugin(BasePlugin):
                 index_path = Path(index_path)
                 self.tags_index_url = self.site_url + \
                     (index_path.parents[0] / index_path.stem).as_posix()
-
-                self.tags_index_template = env.get_template(
-                    "blog-tags-index.html")
 
     def on_serve(self, server, config, builder):
         self.read_in_config(config)
