@@ -16,7 +16,6 @@ BLOG_PAGE_PATTERN = re.compile(
     r"\{\{\s*blog_content\s+(([0-9]|[a-z]|[A-Z]|-|_)*)\s*\}\}", flags=re.IGNORECASE)
 TAG_PAGE_PATTERN = re.compile(
     r"\{\{\s*tag_content\s*\}\}", flags=re.IGNORECASE)
-PLACEHOLDER = "{{ PLACEHOLDER }}"
 THEMES = ["card", "button"]
 with open(DIR_PATH / "templates" / "pagination.js") as file:
     SCRIPTS = "<script>" + file.read() + "</script>"
@@ -54,38 +53,39 @@ class BloggingPlugin(BasePlugin):
     Mkdocs plugin to add blogging functionality
     to mkdocs site.
     """
-    config_scheme = get_config_scheme()
-    util = Util()
+    def __init__(self):
+        self.config_scheme = get_config_scheme()
+        self.util = Util()
 
-    # Global configs
-    site_url = ""
-    meta_time_format: str = None
-    time_format: str = None
-    locale: str = None
-    features: dict = {}
+        # Global configs
+        self.site_url = ""
+        self.meta_time_format: str = None
+        self.time_format: str = None
+        self.locale: str = None
+        self.features: dict = {}
 
-    # Global vars
-    mkdocs_template_context = None
-    # Tags; TODO: Do we need to support categories?
-    tags_index_template = None
-    tags_template = None
-    tags = {}
-    tags_page_html = None
-    tags_index_url = ""
+        # Global vars
+        self.mkdocs_template_context = None
+        # Tags; TODO: Do we need to support categories?
+        self.tags_index_template = None
+        self.tags_template = None
+        self.tags = {}
+        self.tags_page_html = None
+        self.tags_index_url = ""
 
-    # Configs
-    categories: Dict[str, BloggingConfig] = {}
+        # Configs
+        self.categories: Dict[str, BloggingConfig] = {}
 
-    # Blog pages
-    pages = {
-        "global": {
-            "html": None,
-            "pages": []
+        # Blog pages
+        self.pages = {
+            "global": {
+                "html": None,
+                "pages": []
+            }
         }
-    }
 
-    # Templates
-    jinja_templates: Dict[str, Template] = {}
+        # Templates
+        self.jinja_templates: Dict[str, Template] = {}
 
     def read_in_config(self, global_config):
         # Return if the config has already been read
@@ -104,7 +104,7 @@ class BloggingPlugin(BasePlugin):
         self.meta_time_format = self.config.get("meta_time_format")
         self.time_format = self.config.get("time_format")
         self.locale = self.config.get("locale")
-        self.features = self.config.get("features")
+        self.features = self.config.get("features", {})
         if self.config.get("locale"):
             self.locale = self.config.get("locale")
         else:
