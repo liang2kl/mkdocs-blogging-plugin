@@ -38,9 +38,9 @@ plugins:
         options: # Optional
           # `true` if display the button as plain text
           # `false` or not present if display as rectangle button
-          - plain_button: true
+          plain_button: true
           # Replacement for 'Continue Reading'
-          - label: Read
+          label: Read
 ```
 
 ![button](https://i.loli.net/2021/12/02/r1eEQYmFwXOT5jD.png)
