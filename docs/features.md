@@ -46,7 +46,7 @@ Additionally, you can create an index page for all the tags and associated entri
 
 ![preview](https://s2.loli.net/2021/12/03/AudcmgG9N5HzEn4.png)
 
-And, although you can insert the "index" page in multiple pages, it is recommended to specify a *true* index page, so that we can navigate the viewer to that page when they click on the tags. To achieve this, set `index_page` with the relative path of one of the page with `{{ tag_content }}`:
+Although you can insert the "index" page in multiple pages, it is recommended to specify a single index page, so that we can navigate the viewer to that page when they click on the tags. To achieve this, set `index_page` with the relative path of one of the page with `{{ tag_content }}`:
 
 ```yaml title="mkdocs.yml"
 features:
@@ -66,12 +66,14 @@ features:
 
 ![preview](https://s2.loli.net/2021/12/03/DrYHLcmbqNKQznx.png)
 
-**Best practice**: rather than using Header 1 in the markdown, set the title in the meta section:
+!!!tip "Best practices"
 
-```markdown title="article"
----
-title: Lorem ipsum dolor sit amet
----
-```
+    rather than using Header 1 in the markdown, set the title in the meta section:
 
-With this, the tags will be correctly displayed below the header, rather than above it.
+    ```markdown title="article"
+    ---
+    title: Lorem ipsum dolor sit amet
+    ---
+    ```
+
+    With this, the tags will be correctly displayed below the header, rather than above it.
