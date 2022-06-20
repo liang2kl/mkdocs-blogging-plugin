@@ -20,6 +20,7 @@ class TestPluginConfig(unittest.TestCase):
             },
             "paging": False,
             "show_total": False,
+            "full_content": True,
         }
 
         cls.config["categories"] = [
@@ -33,6 +34,7 @@ class TestPluginConfig(unittest.TestCase):
                 },
                 "paging": True,
                 "show_total": True,
+                "full_content": False,
             },
             {
                 "name": "c2",

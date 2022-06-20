@@ -132,7 +132,9 @@ SOFTWARE.
                 {% endif %}
 
                 {% set description = "" %}
-                {% if pg.meta.description %}
+                {% if full_content %}
+                    {% set description = pg.content|safe %}
+                {% elif pg.meta.description %}
                     {% set description = pg.meta.description|truncate %}
                 {% endif %}
 
