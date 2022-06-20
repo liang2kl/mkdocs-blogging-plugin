@@ -6,6 +6,7 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
+from yaml import full_load
 from mkdocs_blogging_plugin.config import BloggingConfig
 from .util import Util
 from pathlib import Path
@@ -36,6 +37,7 @@ def get_config_scheme():
         ("show_total", config_options.Type(bool, default=c.show_total)),
         ("template", config_options.Type(str, default=c.template)),
         ("theme", config_options.Type(dict, default=c.theme)),
+        ("full_content", config_options.Type(bool, default=c.full_content)),
 
         # Global-only configurations
         ("meta_time_format", config_options.Type(str, default=None)),
@@ -321,7 +323,8 @@ class BloggingPlugin(BasePlugin):
             paging=config.paging, is_revision=config.sort["by"] == "revision",
             show_total=config.show_total, theme_options=theme_options,
             index_url=self.tags_index_url, show_tags="tags" in self.features,
-            mkdocs_context=self.mkdocs_template_context
+            mkdocs_context=self.mkdocs_template_context,
+            full_content=config.full_content,
         )
 
     def with_timestamp(self, page, by_revision):
