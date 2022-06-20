@@ -154,6 +154,7 @@ sort:
   # or revision    # Sort by the latest commit time
 paging: false      # Disable paging
 show_total: false  # Remove 'total pages' label
+full_content: true # Use the full content for blog description
 template: blog-override.html # Path to customized template
 theme:             # Use a predefined theme
   name: card
