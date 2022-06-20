@@ -6,7 +6,6 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import PluginError
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
-from yaml import full_load
 from mkdocs_blogging_plugin.config import BloggingConfig
 from .util import Util
 from pathlib import Path
