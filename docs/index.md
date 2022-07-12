@@ -81,11 +81,11 @@ tags:
 
 For more detail, check [Features - tags](features.md#tags).
 
-Finally, to exclude certain pages from the blog collection, add a meta tag `exculde_from_blog` in the meta section of the markdown file:
+Finally, to exclude certain pages from the blog collection, add a meta tag `exclude_from_blog` in the meta section of the markdown file:
 
 ```markdown title="article"
 ---
-exculde_from_blog: true
+exclude_from_blog: true
 ---
 ```
 
