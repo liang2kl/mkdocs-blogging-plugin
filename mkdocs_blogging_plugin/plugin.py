@@ -195,6 +195,10 @@ class BloggingPlugin(BasePlugin):
                 index_path = Path(index_path)
                 self.tags_index_url = self.site_url + \
                     (index_path.parents[0] / index_path.stem).as_posix()
+                # Adapt mkdocs's `use_directory_urls` setting.
+                # See https://www.mkdocs.org/user-guide/configuration/#use_directory_urls.
+                if global_config.get("use_directory_urls") == False:
+                    self.tags_index_url += ".html"
 
     def on_serve(self, server, config, builder):
         self.read_in_config(config)
