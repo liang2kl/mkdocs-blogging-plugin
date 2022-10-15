@@ -2,7 +2,7 @@
 
 A mkdocs plugin that generates a blog page listing selected pages, sorted by time. It supports:
 
-- Auto-generated blog pages
+- Automatic blog page generation
 - Tags
 - Category-level customization
 - Template-based customization
