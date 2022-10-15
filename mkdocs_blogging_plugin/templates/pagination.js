@@ -44,12 +44,14 @@ if (pagination) {
               // This is the destination page
               pages[j].className = pages[j].className.replace(" blog-hidden", "")
             }
-            scrollToTop();
           }
+          scrollToTop();
         }
       });
     }
     links[currentPage].className += " active"
-    links[currentPage].click();
+    if (currentPage > 0) {
+      links[currentPage].click();
+    }
   }
 }

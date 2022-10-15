@@ -43,6 +43,7 @@ SOFTWARE.
 
     .md-typeset .blog-pagination {
         display: inline-block;
+        margin-top: 20px;
     }
 
     .md-typeset .blog-pagination a {
@@ -153,7 +154,12 @@ SOFTWARE.
 <div class="blog-center {{'blog-hidden' if page_num == 1 else '' }}">
     <div class="blog-pagination " id="blog-pagination">
         {% for num in range(page_num) %}
-            <a class="page-number" href="#blog-p{{ num + 1 }}">{{ num + 1 }}</a>
+            {% if num == 0 %}
+                {% set link = "" %}
+            {% else %}
+                {% set link = "#blog-p" + (num + 1)|string %}
+            {% endif %}
+            <a class="page-number" href="{{ link }}">{{ num + 1 }}</a>
         {% endfor %}
     </div>
     {% if show_total %}
