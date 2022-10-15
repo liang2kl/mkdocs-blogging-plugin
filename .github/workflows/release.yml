@@ -1,0 +1,62 @@
+on:
+  workflow_run:
+    workflows: ["test"]
+    branches: [main]
+    types: 
+      - completed
+    tags:
+      - "v*"
+
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      
+      # Check if the name of the package matches the git tag.
+      # Retrive version code from setup.py.
+      - name: "Retrive version code"
+        id: get_version
+        run: |
+          VERSION="v$(cat setup.py | grep -Po 'version=\"([0-9\.]+)\"' | cut -d\" -f 2)"
+          echo "::set-output name=VERSION::${VERSION}"
+          echo "::set-output name=TAG_VERSION::${GITHUB_REF#refs/*/}"
+      
+      - name: "Check if version code matches"
+        if: ${{ steps.get_version.outputs.VERSION == steps.get_version.outputs.TAG_VERSION }}
+        run: echo "Version check passed."
+
+      - name: "Build"
+        run: |
+          pip install -r requirements.txt
+          pip install --upgrade twine build
+          python -m build
+          twine upload dist/*
+
+      - name: Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Generate changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: changelog
+        env:
+          REPO: ${{ github.repository }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
