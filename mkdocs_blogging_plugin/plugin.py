@@ -227,7 +227,7 @@ class BloggingPlugin(BasePlugin):
         if "tags" in self.features and "tags" in page.meta:
             tags = page.meta["tags"]
             page = self.with_timestamp(
-                page, self.categories["global"].sort["by"] != "revision")
+                page, self.categories["global"].sort["by"] == "revision")
             if isinstance(tags, list):
                 for tag in tags:
                     if tag not in self.tags:
@@ -269,7 +269,7 @@ class BloggingPlugin(BasePlugin):
             for dir in config.dirs:
                 if Path(dir) in file_path.parents:
                     self.pages[name]["pages"].append(
-                        self.with_timestamp(page, config.sort["by"] != "revision"))
+                        self.with_timestamp(page, config.sort["by"] == "revision"))
                     break
 
     def on_post_page(self, output, page, config):
