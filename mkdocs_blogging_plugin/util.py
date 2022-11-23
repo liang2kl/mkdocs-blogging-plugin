@@ -92,7 +92,7 @@ class Util:
             if is_first_commit:
                 # diff_filter="A" will select the commit that created the file
                 commit_timestamp = git.log(
-                    realpath, date="short", format="%at", diff_filter="A"
+                    realpath, date="short", format="%at", diff_filter="A", follow=True
                 )
                 # A file can be created multiple times, through a file renamed. 
                 # Commits are ordered with most recent commit first
@@ -101,7 +101,7 @@ class Util:
                     commit_timestamp = commit_timestamp.split()[-1]
             else:
                 commit_timestamp = git.log(
-                    realpath, date="short", format="%at", n=1
+                    realpath, date="short", format="%at", n=1, follow=True
                 )
         except (InvalidGitRepositoryError, NoSuchPathError) as err:
             logger.warning(
