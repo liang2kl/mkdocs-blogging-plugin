@@ -178,6 +178,21 @@ plugins:
           ...
 ```
 
+You can also define the category-specific settings in a YAML file. To do that, you need to add a new default key `config_filename` in the plugin configuration:
+
+```yaml title="mkdocs.yml"
+plugins:
+  - blogging:
+      config_filename: .pages
+```
+
+
+!!! notes "Awesome pages"
+    You can use the same file as the [awesome pages plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin).
+
+Moreover, you can also automatically create blog pages for each root directory. Theses pages will be named after the directory name. To do that, you need to add or set the key `use_root_dirs` to `true` in the plugin configuration.
+
+
 For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
 ### Global Settings
@@ -192,6 +207,9 @@ features:          # Additional features
 locale: en         # The locale for time localizations, default: system's locale
 time_format: '%Y-%m-%d %H:%M:%S' # The format used to display the time
 meta_time_format: '%Y-%m-%d %H:%M:%S' # The format used to parse the time from meta
+exclude_index: false # Exclude the index page from the blog collection (default: false)
+use_root_dirs: false # Automatically create blog pages for each root directory (default: false)
+config_filename: .pages # The filename of the configuration file (default: none)
 ```
 
 Of all the options mentioned above, these deserve special attention:
@@ -206,6 +224,9 @@ See [the list of datetime placeholders](https://docs.python.org/3/library/dateti
 
 - When `paging` in *category settings* is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
 `size` posts will be displayed and *the rest will not*.
+- `exclude_index` in *global settings* is used to exclude the index page from the blog collection. This is useful when you want to use the index page as a landing page for your blog.
+- `use_root_dirs` in *global settings* is used to automatically create blog pages for each root directory. Theses pages will be named after the directory name.
+- `config_filename` in *global settings* is used to define the filename of the configuration file. See the [category specific options](#category-specific-settings) section for more details.
 
 ## Publish with Github Pages
 
