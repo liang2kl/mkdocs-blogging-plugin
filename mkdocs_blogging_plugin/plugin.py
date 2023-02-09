@@ -145,8 +145,6 @@ class BloggingPlugin(BasePlugin):
                     if self.use_root_dirs and f.parent.name in self.categories:
                         del self.categories[f.parent.name]
                     self.categories[name] = default_config
-            for k, v in self.categories.items():
-                print(k, v.__dict__)
         if isinstance(categories, list):
             for c in categories:
                 if isinstance(c, dict) and "name" in c:
