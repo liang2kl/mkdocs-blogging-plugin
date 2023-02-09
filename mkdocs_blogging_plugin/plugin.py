@@ -10,6 +10,7 @@ from mkdocs_blogging_plugin.config import BloggingConfig
 from .util import Util
 from pathlib import Path
 from datetime import datetime
+import yaml
 
 DIR_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 BLOG_PAGE_PATTERN = re.compile(
@@ -43,6 +44,9 @@ def get_config_scheme():
         ("time_format", config_options.Type(str, default=None)),
         ("locale", config_options.Type(str, default=None)),
         ("features", config_options.Type(dict, default={})),
+        ("use_root_dirs", config_options.Type(bool, default=False)), #Use root_dirs with global parameters
+        ("config_filename", config_options.Type(str, default = "")), #use a config file to setup the plugin for each folder
+        ("exclude_index", config_options.Type(bool, default=False)), #Exclude index.md automatically from the blog listing pages
 
         # Extra: categories (list of configs)
         ("categories", config_options.Type(list, default=[])),
@@ -64,6 +68,9 @@ class BloggingPlugin(BasePlugin):
         self.time_format: str = None
         self.locale: str = None
         self.features: dict = {}
+        self.use_root_dirs: bool = False
+        self.config_filename: str = ""
+        self.exclude_index: bool = False
 
         # Global vars
         self.mkdocs_template_context = None
@@ -106,6 +113,9 @@ class BloggingPlugin(BasePlugin):
         self.time_format = self.config.get("time_format")
         self.locale = self.config.get("locale")
         self.features = self.config.get("features", {})
+        self.use_root_dirs = self.config.get("use_root_dirs")
+        self.config_filename = self.config.get("config_filename")
+        self.exclude_index = self.config.get("exclude_index")
         if self.config.get("locale"):
             self.locale = self.config.get("locale")
         else:
@@ -114,6 +124,29 @@ class BloggingPlugin(BasePlugin):
         # Read in configs of all categories
         self.categories["global"] = BloggingConfig(self.config)
         categories = self.config.get("categories")
+        docs_dir = Path(global_config.get("docs_dir"))
+        if self.use_root_dirs:
+            root_dirs = [d for d in docs_dir.iterdir() if d.is_dir()]
+            for d in root_dirs:
+                config = BloggingConfig(self.config)
+                config.dirs = [d.name]
+                self.categories[d.name] = config
+        if self.config_filename:
+            config_files = [f for f in docs_dir.rglob(self.config_filename)]
+            for f in config_files:
+                with open(f, "r") as stream:
+                    config = yaml.safe_load(stream)
+                this_categories = config.get("categories", None)
+                if this_categories:
+                    this_categories["dirs"] = this_categories.get("dirs", [f.parent.relative_to(docs_dir).as_posix()])
+                    default_config = BloggingConfig(this_categories)
+                    name = config['categories'].get('name', f.parent.name)
+                    #in case of the folder is registered with root, remove it
+                    if self.use_root_dirs and f.parent.name in self.categories:
+                        del self.categories[f.parent.name]
+                    self.categories[name] = default_config
+            for k, v in self.categories.items():
+                print(k, v.__dict__)
         if isinstance(categories, list):
             for c in categories:
                 if isinstance(c, dict) and "name" in c:
@@ -258,8 +291,7 @@ class BloggingPlugin(BasePlugin):
         been generated, the time when the meta from markdown file
         has already been added into the page instance.
         """
-
-        if "exclude_from_blog" in page.meta and page.meta["exclude_from_blog"]:
+        if ("exclude_from_blog" in page.meta and page.meta["exclude_from_blog"]) or (self.exclude_index and page.file.name == "index"):
             return
 
         file_path = Path(page.file.src_path)
