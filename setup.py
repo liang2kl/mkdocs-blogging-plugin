@@ -13,9 +13,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     keywords="mkdocs blog plugin",
-    project_urls={
-        "Source": "https://github.com/liang2kl/mkdocs-blogging-plugin"
-    },
+    project_urls={"Source": "https://github.com/liang2kl/mkdocs-blogging-plugin"},
     author="Liang Yesheang",
     author_email="liang2kl@outlook.com",
     include_package_data=True,
@@ -34,8 +32,6 @@ setup(
     install_requires=DEPENDENCIES,
     packages=find_packages(),
     entry_points={
-        "mkdocs.plugins": [
-            "blogging = mkdocs_blogging_plugin.plugin:BloggingPlugin"
-        ]
-    }
+        "mkdocs.plugins": ["blogging = mkdocs_blogging_plugin.plugin:BloggingPlugin"]
+    },
 )

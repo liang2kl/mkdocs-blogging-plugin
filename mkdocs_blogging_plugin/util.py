@@ -43,6 +43,7 @@ from datetime import datetime
 
 logger = logging.getLogger("mkdocs.plugins")
 
+
 class Util:
     """Utility class.
 
@@ -62,12 +63,7 @@ class Util:
 
         return self.repo_cache[path]
 
-
-    def get_git_commit_timestamp(
-            self,
-            path: str,
-            is_first_commit: bool = False
-    ) -> int:
+    def get_git_commit_timestamp(self, path: str, is_first_commit: bool = False) -> int:
         """
         Get a list of commit dates in unix timestamp, starts with the most recent commit.
 
@@ -94,7 +90,7 @@ class Util:
                 commit_timestamp = git.log(
                     realpath, date="short", format="%at", diff_filter="A", follow=True
                 )
-                # A file can be created multiple times, through a file renamed. 
+                # A file can be created multiple times, through a file renamed.
                 # Commits are ordered with most recent commit first
                 # Get the oldest commit only
                 if commit_timestamp != "":
@@ -112,8 +108,7 @@ class Util:
         except GitCommandError as err:
             logger.warning(
                 "[blogging-plugin] Unable to read git logs of '%s'. Is git log readable?"
-                " Falling back to build date."
-                % path
+                " Falling back to build date." % path
             )
             commit_timestamp = time.time()
         except GitCommandNotFound as err:
@@ -127,14 +122,15 @@ class Util:
         if commit_timestamp == "":
             commit_timestamp = time.time()
             logger.warning(
-                "[blogging-plugin] '%s' has no git logs, using current timestamp"
-                % path
+                "[blogging-plugin] '%s' has no git logs, using current timestamp" % path
             )
 
         return int(commit_timestamp)
 
     @staticmethod
-    def get_localized_date(timestamp: float, day_only: bool, format: str=None, _locale: str=None) -> str:
+    def get_localized_date(
+        timestamp: float, day_only: bool, format: str = None, _locale: str = None
+    ) -> str:
         time = datetime.fromtimestamp(timestamp)
         if format:
             return datetime.strftime(time, format)
