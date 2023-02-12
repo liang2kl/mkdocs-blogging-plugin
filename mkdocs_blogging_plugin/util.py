@@ -40,6 +40,7 @@ from git import (
 from babel.dates import format_date, format_datetime
 import locale
 from datetime import datetime
+from functools import lru_cache
 
 logger = logging.getLogger("mkdocs.plugins")
 
@@ -63,6 +64,7 @@ class Util:
         return self.repo_cache[path]
 
 
+    @lru_cache
     def get_git_commit_timestamp(
             self,
             path: str,
