@@ -227,7 +227,7 @@ If it is not set, the plugin will take the build time as fallback.
 ```yaml title="article"
 plugins:
   - blogging:
-      locale: zh-CN
+      locale: zh_CN
 ```
 
 Otherwise, the plugin will use locale of the server, which might not be expected.
