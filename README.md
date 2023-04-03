@@ -32,8 +32,7 @@ pip install mkdocs-blogging-plugin
 
 A complete guide is available at https://liang2kl.github.io/mkdocs-blogging-plugin.
 
-You might need to follow the [migration guide](https://liang2kl.github.io/mkdocs-blogging-plugin/migration)
-to upgrade to a new version.
+The easiest way to setup everything from scratch is generating your project from [the template repository](https://github.com/liang2kl/mkdocs-blogging-plugin-bootstrap).
 
 ## Credits
 
