@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as file:
 
 setup(
     name="mkdocs-blogging-plugin",
-    version="2.2.3",
+    version="2.2.4",
     description="Mkdocs plugin that generates a blog index page sorted by creation date.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
