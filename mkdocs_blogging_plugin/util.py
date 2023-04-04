@@ -64,7 +64,7 @@ class Util:
         return self.repo_cache[path]
 
 
-    @lru_cache
+    @lru_cache(max_size=None)
     def get_git_commit_timestamp(
             self,
             path: str,
