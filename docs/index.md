@@ -199,10 +199,17 @@ Of all the options mentioned above, these deserve special attention:
 - `time_format` in *global settings* is used to change the display style of the time, with higher priority than `locale`. 
 
 - `meta_time_format` in *global settings* is used to tell the plugin how to parse the given time string from the meta. 
-When `meta_time_format` is set, for all posts with a `time` or `date` metadata, the plugin will
-use this format to parse the that time, and replace the time from git logs. This is
-useful to alter specific posts' time when git commit time is not accurate or desired.
-See [the list of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes).
+  - When `meta_time_format` is set, for all posts with a `time` or `date` metadata, the plugin will
+  use this format to parse the time, and replace the timestamp from git logs. This is
+  useful to alter specific posts' time if git commit time is not accurate or desired.
+  See [the list of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) for reference.
+  
+    Please make sure that the time is wrapped by quotes \(issue [#48](https://github.com/liang2kl/mkdocs-blogging-plugin/issues/48)\). Otherwise, native YAML date and time literals will always be used if present in the file metadata, regardless of this setting. For example:
+
+    ```yaml
+    time: 2023-4-13 00:48               # without quotes
+    time: !!timestamp "2023-4-13 00:48" # provide the `timestamp` tag
+    ```
 
 - When `paging` in *category settings* is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
 `size` posts will be displayed and *the rest will not*.

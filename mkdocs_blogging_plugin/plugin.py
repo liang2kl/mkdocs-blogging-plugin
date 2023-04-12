@@ -1,15 +1,18 @@
-import os
 import logging
+import os
 import re
-from typing import Dict
-from mkdocs.config import config_options
-from mkdocs.plugins import BasePlugin
-from mkdocs.exceptions import PluginError
-from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
-from mkdocs_blogging_plugin.config import BloggingConfig
-from .util import Util
+from datetime import date, datetime
 from pathlib import Path
-from datetime import datetime
+from typing import Dict
+
+from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
+from mkdocs.config import config_options
+from mkdocs.exceptions import PluginError
+from mkdocs.plugins import BasePlugin
+
+from mkdocs_blogging_plugin.config import BloggingConfig
+
+from .util import Util
 
 DIR_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 BLOG_PAGE_PATTERN = re.compile(
@@ -332,13 +335,10 @@ class BloggingPlugin(BasePlugin):
 
     def with_timestamp(self, page, by_revision):
         timestamp = None
-        if self.meta_time_format:
-            if "time" in page.meta:
-                timestamp = datetime.strptime(
-                    page.meta["time"], self.meta_time_format).timestamp()
-            elif "date" in page.meta:
-                timestamp = datetime.strptime(
-                    page.meta["date"], self.meta_time_format).timestamp()
+        if "time" in page.meta:
+            timestamp = self._parse_time(page.meta["time"])
+        if "date" in page.meta and timestamp is None:
+            timestamp = self._parse_time(page.meta["date"])
         if not timestamp:
             timestamp = self.util.get_git_commit_timestamp(
                 page.file.abs_src_path, is_first_commit=(not by_revision))
@@ -347,3 +347,12 @@ class BloggingPlugin(BasePlugin):
             timestamp, False, format=self.time_format, _locale=self.locale)
 
         return page
+
+    def _parse_time(self, value):
+        if isinstance(value, datetime):
+            return value.timestamp()
+        if isinstance(value, date):
+            return datetime.combine(value, datetime.min.time()).timestamp()
+        if self.meta_time_format and isinstance(value, str):
+            return datetime.strptime(value, self.meta_time_format).timestamp()
+        return None
