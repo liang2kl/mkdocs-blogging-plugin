@@ -1,8 +1,8 @@
-from datetime import datetime
+import datetime
 import os
+import unittest
 from pathlib import Path
 from types import SimpleNamespace
-import unittest
 
 from mkdocs_blogging_plugin.plugin import BloggingPlugin
 
@@ -29,12 +29,24 @@ class TestPluginFormatting(unittest.TestCase):
         meta_date_str = "2022-05-03 11:09:00"
         page = SimpleNamespace(meta={"time": meta_date_str})
 
-        date = datetime.strptime(
+        date = datetime.datetime.strptime(
             meta_date_str, self.config["meta_time_format"])
         
         page = self.plugin.with_timestamp(page, False)
 
-        expected_output = datetime.strftime(
+        expected_output = datetime.datetime.strftime(
             date, self.config["time_format"])
 
         assert page.meta["localized-time"] == expected_output
+
+    def test_date_object(self):
+        page = SimpleNamespace(meta={"date": datetime.date(2023, 4, 12)})
+        page = self.plugin.with_timestamp(page, False)
+
+        assert page.meta["localized-time"] == "2023/04/12 00:00:00"
+
+    def test_datetime_object(self):
+        page = SimpleNamespace(meta={"date": datetime.datetime(2023, 4, 12, 9, 15, 30)})
+        page = self.plugin.with_timestamp(page, False)
+
+        assert page.meta["localized-time"] == "2023/04/12 09:15:30"
