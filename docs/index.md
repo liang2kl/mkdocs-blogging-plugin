@@ -204,6 +204,8 @@ use this format to parse the that time, and replace the time from git logs. This
 useful to alter specific posts' time when git commit time is not accurate or desired.
 See [the list of datetime placeholders](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes).
 
+    Native YAML date and time literals will always be used if present in the file metadata.
+
 - When `paging` in *category settings* is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
 `size` posts will be displayed and *the rest will not*.
 
