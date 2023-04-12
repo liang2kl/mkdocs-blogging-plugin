@@ -140,7 +140,7 @@ To generate a blog page for a named category (in our case, `review`):
 ### Category-specific Settings
 
 You can specify the included directories for each category
-and configure the options seperately. The *category-specific* settings include:
+and configure the options separately. The *category-specific* settings include:
 
 ```yaml title="category settings"
 dirs:              # The directories included in the category
@@ -178,6 +178,23 @@ plugins:
           ...
 ```
 
+Of all options mentioned above, these deserve special attention:
+
+1. If you have a lots of categories, you might want to put their configuration in a separate YAML file. To do that, you need to add a new default key `config_filename` in the plugin configuration:
+
+    ```yaml title="mkdocs.yml"
+    plugins:
+      - blogging:
+          config_filename: .pages
+    ```
+   Each category must have their own configuration file. For example, if you have a folder named `review`, you need to create a file named `.pages` in it (like : `review/.pages`). This will "transform" the folder into a category.
+
+    !!! notes "Awesome pages"
+        You can use the same file as the [awesome pages plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin).
+
+2. You can also automatically create blog pages for each root directory. These pages will be named after the directory name. To do that, you need to add or set the key `use_root_dirs` to `true` in the plugin configuration.
+
+
 For more about themes and custom templates, see [Themes](theme.md) and [Template](template.md) respectively.
 
 ### Global Settings
@@ -192,6 +209,9 @@ features:          # Additional features
 locale: en         # The locale for time localizations, default: system's locale
 time_format: '%Y-%m-%d %H:%M:%S' # The format used to display the time
 meta_time_format: '%Y-%m-%d %H:%M:%S' # The format used to parse the time from meta
+exclude_index: false # Exclude the index page from the blog collection (default: false)
+use_root_dirs: false # Automatically create blog pages for each root directory (default: false)
+config_filename: .pages # The filename of the configuration file (default: none)
 ```
 
 Of all the options mentioned above, these deserve special attention:
@@ -206,6 +226,12 @@ See [the list of datetime placeholders](https://docs.python.org/3/library/dateti
 
 - When `paging` in *category settings* is set to `false`, if `size` is not set, all posts will be displayed on the first page; otherwise the first
 `size` posts will be displayed and *the rest will not*.
+- `exclude_index` in *global settings* is used to exclude the index page from the blog collection. This is useful when you want to use the index page as a landing page for your blog.
+- `use_root_dirs` in *global settings* is used to automatically create blog pages for each root directory. Theses pages will be named after the directory name.
+- `config_filename` in *global settings* is used to define the filename of the configuration file. See the [category specific options](#category-specific-settings) section for more details.
+
+
+Note that specify a category with the same name as the one from the root directories will override it.
 
 ## Publish with Github Pages
 

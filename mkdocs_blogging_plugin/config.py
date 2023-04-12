@@ -15,5 +15,5 @@ class BloggingConfig:
         self.paging = config.get("paging", True)
         self.show_total = config.get("show_total", True)
         self.template = config.get("template")
-        self.theme = config.get("theme")    
+        self.theme = config.get("theme")
         self.full_content = config.get("full_content", False)
