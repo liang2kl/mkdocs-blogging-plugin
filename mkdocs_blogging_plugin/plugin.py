@@ -353,5 +353,6 @@ class BloggingPlugin(BasePlugin):
             return value.timestamp()
         if isinstance(value, date):
             return datetime.combine(value, datetime.min.time()).timestamp()
-        if self.meta_time_format:
+        if self.meta_time_format and isinstance(value, str):
             return datetime.strptime(value, self.meta_time_format).timestamp()
+        return None

@@ -50,3 +50,18 @@ class TestPluginFormatting(unittest.TestCase):
         page = self.plugin.with_timestamp(page, False)
 
         assert page.meta["localized-time"] == "2023/04/12 09:15:30"
+
+    def test_datetime_object_fallback(self):
+        """
+        If meta.time is present but is an invalid type, we want to fall
+        back to using meta.date if available and valid.
+        """
+        page = SimpleNamespace(
+            meta={
+                "time": 500,
+                "date": datetime.datetime(2023, 4, 12, 9, 15, 30),
+            }
+        )
+        page = self.plugin.with_timestamp(page, False)
+
+        assert page.meta["localized-time"] == "2023/04/12 09:15:30"
