@@ -43,7 +43,7 @@ body:
     attributes:
       label: Plugin version
       description: What version of the plugin are you running?
-      placeholder: v2.2.5
+      placeholder: e.g. v2.2.5
     validations:
       required: true
   - type: input
@@ -51,7 +51,7 @@ body:
     attributes:
       label: Python version
       description: What version of Python are you running the plugin on?
-      placeholder: "3.9"
+      placeholder: "e.g. 3.9"
     validations:
       required: true
   - type: textarea

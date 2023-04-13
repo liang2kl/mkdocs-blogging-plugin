@@ -35,7 +35,7 @@ body:
     attributes:
       label: Plugin version
       description: What version of the plugin are you running?
-      placeholder: v2.2.5
+      placeholder: e.g. v2.2.5
     validations:
       required: true
   - type: textarea
