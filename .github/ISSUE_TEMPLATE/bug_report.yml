@@ -8,6 +8,33 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: What version of the plugin are you running?
+      placeholder: e.g. v2.2.5
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      description: What version of Python are you running the plugin on?
+      placeholder: "e.g. 3.9"
+    validations:
+      required: true
+  - type: textarea
+    id: other-env
+    attributes:
+      label: Additional environment information (optional)
+      description: Additional information about your environment, e.g. OS version.
+      placeholder: |
+        e.g.
+          - **OS**: Ubuntu 22.04
+      render: markdown
+
   - type: textarea
     id: what-happened
     attributes:
@@ -38,29 +65,6 @@ body:
       render: markdown
     validations:
       required: true
-  - type: input
-    id: plugin-version
-    attributes:
-      label: Plugin version
-      description: What version of the plugin are you running?
-      placeholder: e.g. v2.2.5
-    validations:
-      required: true
-  - type: input
-    id: python-version
-    attributes:
-      label: Python version
-      description: What version of Python are you running the plugin on?
-      placeholder: "e.g. 3.9"
-    validations:
-      required: true
-  - type: textarea
-    id: other-env
-    attributes:
-      label: Additional environment information (optional)
-      description: Additional information about your environment, e.g. OS version.
-      placeholder: "- **OS**: Ubuntu 22.04"
-      render: markdown
   - type: textarea
     id: context
     attributes:
