@@ -55,13 +55,12 @@ body:
     id: reproduce
     attributes:
       label: How to reproduce the bug?
-      description: Please describe the expected behaviour.
+      description: Please describe the steps to reproduce the behaviour.
       placeholder: |
-        Steps to reproduce the behavior:
-          1. Go to '...'
-          2. Click on '....'
-          3. Scroll down to '....'
-          4. See error
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
       render: markdown
     validations:
       required: true
