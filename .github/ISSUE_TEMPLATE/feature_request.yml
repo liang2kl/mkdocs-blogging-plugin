@@ -23,14 +23,12 @@ body:
       label: Is your feature request related to a problem? (optional)
       description: A clear and concise description of what the problem is.
       placeholder: I'm always frustrated when ...
-      render: markdown
   - type: textarea
     id: expected
     attributes:
       label: What is your suggestion?
       description: Describe the solution you'd like.
       placeholder: A clear and concise description of what you want to happen.
-      render: markdown
     validations:
       required: true
   - type: textarea
@@ -39,10 +37,8 @@ body:
       label: Any other idea?
       description: Describe alternatives you've considered.
       placeholder: A clear and concise description of any alternative solutions or features you've considered.
-      render: markdown
   - type: textarea
     id: context
     attributes:
       label: Additional context (optional)
       description: Add any other context about the problem here.
-      render: markdown
