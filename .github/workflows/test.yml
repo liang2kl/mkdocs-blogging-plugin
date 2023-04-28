@@ -11,3 +11,13 @@ jobs:
           python-version: "3.6.7"
       - run: pip install -r requirements.txt
       - run: python -m unittest
+
+  test-3.11:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.11.0"
+      - run: pip install -r requirements.txt
+      - run: python -m unittest

@@ -38,7 +38,7 @@ from git import (
 )
 
 from babel.dates import format_date, format_datetime
-import locale
+import locale, sys
 from datetime import datetime
 from functools import lru_cache
 
@@ -142,7 +142,10 @@ class Util:
             return datetime.strftime(time, format)
         else:
             if not _locale:
-                _locale = locale.getdefaultlocale()[0]
+                if sys.version_info[0] < (3, 11):
+                    _locale = locale.getdefaultlocale()[0]
+                else:
+                    _locale = locale.getlocale()[0]
 
             if day_only:
                 return format_date(time.date(), format="short", locale=_locale)
