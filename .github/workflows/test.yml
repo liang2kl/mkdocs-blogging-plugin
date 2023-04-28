@@ -12,7 +12,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m unittest
 
-  test-3.11:
+  test_higher:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
