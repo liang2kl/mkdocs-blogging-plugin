@@ -142,7 +142,7 @@ class Util:
             return datetime.strftime(time, format)
         else:
             if not _locale:
-                if sys.version_info[0] < (3, 11):
+                if sys.version_info[:2] < (3, 11):
                     _locale = locale.getdefaultlocale()[0]
                 else:
                     _locale = locale.getlocale()[0]
