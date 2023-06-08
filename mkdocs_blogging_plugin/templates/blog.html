@@ -119,50 +119,52 @@ SOFTWARE.
 {%- endmacro %}
 {% endif %}
 
-<div class="pages">
-    {% for page_idx in range(0, page_num) %}
-        {% set pg_group = pages[page_idx*page_size:(page_idx + 1)*page_size] %}
-        <div class="page" id="page{{ page_idx + 1 }}">
+<div class = "md-typeset">
+    <div class="pages">
+        {% for page_idx in range(0, page_num) %}
+            {% set pg_group = pages[page_idx*page_size:(page_idx + 1)*page_size] %}
+            <div class="page" id="page{{ page_idx + 1 }}">
 
-            {% for pg in pg_group %}
-                {# Setting variables. #}
-                {% set url = pg.canonical_url %}
-                {% set title = pg.title %}
-                {% if pg.meta and pg.meta.title_full %}
-                    {% set title = pg.meta.title_full %}
-                {% endif %}
+                {% for pg in pg_group %}
+                    {# Setting variables. #}
+                    {% set url = pg.canonical_url %}
+                    {% set title = pg.title %}
+                    {% if pg.meta and pg.meta.title_full %}
+                        {% set title = pg.meta.title_full %}
+                    {% endif %}
 
-                {% set description = "" %}
-                {% if full_content %}
-                    {% set description = pg.content|safe %}
-                {% elif pg.meta.description %}
-                    {% set description = pg.meta.description|truncate %}
-                {% endif %}
+                    {% set description = "" %}
+                    {% if full_content %}
+                        {% set description = pg.content|safe %}
+                    {% elif pg.meta.description %}
+                        {% set description = pg.meta.description|truncate %}
+                    {% endif %}
 
-                {% set time = "" %}
-                {% if pg.meta and pg.meta["localized-time"] %}
-                    {% set time = pg.meta["localized-time"] %}
-                {% endif %}
-                
-                {% call render_blog(title, description, time, url, pg) %}
-                {% endcall %}
-            {% endfor %}
-        </div>
-    {% endfor %}
-</div>
-
-<div class="blog-center {{'blog-hidden' if page_num == 1 else '' }}">
-    <div class="blog-pagination " id="blog-pagination">
-        {% for num in range(page_num) %}
-            {% if num == 0 %}
-                {% set link = "" %}
-            {% else %}
-                {% set link = "#blog-p" + (num + 1)|string %}
-            {% endif %}
-            <a class="page-number" href="{{ link }}">{{ num + 1 }}</a>
+                    {% set time = "" %}
+                    {% if pg.meta and pg.meta["localized-time"] %}
+                        {% set time = pg.meta["localized-time"] %}
+                    {% endif %}
+                    
+                    {% call render_blog(title, description, time, url, pg) %}
+                    {% endcall %}
+                {% endfor %}
+            </div>
         {% endfor %}
     </div>
-    {% if show_total %}
-        <div>Total <b>{{ pages|count }}</b> posts.</div>
-    {% endif %}
+
+    <div class="blog-center {{'blog-hidden' if page_num == 1 else '' }}">
+        <div class="blog-pagination " id="blog-pagination">
+            {% for num in range(page_num) %}
+                {% if num == 0 %}
+                    {% set link = "" %}
+                {% else %}
+                    {% set link = "#blog-p" + (num + 1)|string %}
+                {% endif %}
+                <a class="page-number" href="{{ link }}">{{ num + 1 }}</a>
+            {% endfor %}
+        </div>
+        {% if show_total %}
+            <div>Total <b>{{ pages|count }}</b> posts.</div>
+        {% endif %}
+    </div>
 </div>

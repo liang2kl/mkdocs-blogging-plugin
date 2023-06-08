@@ -6,8 +6,10 @@
 {% from "blog-tags-render.html" import get_tags_style %}
 {% endif %}
 
-{% call render_tags(tags, index_url) -%}
-{% endcall %}
+<div class="md-typeset">
+    {% call render_tags(tags, index_url) -%}
+    {% endcall %}
+</div>
 
 {% call get_tags_style() -%}
 {% endcall %}
