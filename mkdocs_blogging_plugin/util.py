@@ -146,6 +146,9 @@ class Util:
                     _locale = locale.getdefaultlocale()[0]
                 else:
                     _locale = locale.getlocale()[0]
+                # Fallback to en_US if locale environment is not set
+                if not _locale:
+                    _locale = "en_US"
 
             if day_only:
                 return format_date(time.date(), format="short", locale=_locale)
