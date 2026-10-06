@@ -202,6 +202,10 @@ class BloggingPlugin(BasePlugin):
                 # See https://www.mkdocs.org/user-guide/configuration/#use_directory_urls.
                 if global_config.get("use_directory_urls") == False:
                     self.tags_index_url += ".html"
+            # support for `index_template` config value
+            tags_index_template = self.features["tags"].get("index_template")
+            if tags_index_template:
+                self.tags_index_template = env.get_template((root_url / tags_index_template).name)
 
     def on_serve(self, server, config, builder):
         self.read_in_config(config)
